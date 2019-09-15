@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="binary_container_1">
+  <platform vendor="xilinx" boardid="aws-vu9p-f1-04261818" name="dynamic" featureRomTime="0">
+    <version major="5" minor="0"/>
+    <description/>
+    <board name="amazon:minotaur-vu9p-f1:1.0" vendor="amazon" fpga="">
+      <interfaces>
+        <interface id="int1" name="PCIe" type="gen3x16"/>
+      </interfaces>
+      <memories>
+        <memory name="mem0" type="ddr4" size="16GB"/>
+        <memory name="mem1" type="ddr4" size="16GB"/>
+        <memory name="mem2" type="ddr4" size="16GB"/>
+        <memory name="mem3" type="ddr4" size="16GB"/>
+      </memories>
+      <images>
+        <image name="" type="HDPI"/>
+        <image name="" type="MDPI"/>
+        <image name="" type="LDPI"/>
+      </images>
+      <id>
+        <vendor>0x1d0f</vendor>
+        <device>0x1042</device>
+        <subsystem>0x0000</subsystem>
+      </id>
+    </board>
+    <build_flow/>
+    <host architecture="x86_64"/>
+    <device name="fpga0" fpgaDevice="virtexuplus:xcvu9p:flgb2104:-2:i" addrWidth="0">
+      <core name="OCL_REGION_0" target="csim" type="clc_region" clockFreq="0MHz" numComputeUnits="60">
+        <kernel name="compute_matrices" language="c" vlnv="xilinx.com:hls:compute_matrices:1.0" preferredWorkGroupSizeMultiple="1" workGroupSize="1" debug="true" interrupt="true">
+          <port name="M_AXI_GMEM" mode="master" range="0xFFFFFFFF" dataWidth="32" portType="addressable" base="0x0"/>
+          <port name="S_AXI_CONTROL" mode="slave" range="0x1000" dataWidth="32" portType="addressable" base="0x0"/>
+          <arg name="string1" addressQualifier="1" id="0" port="M_AXI_GMEM" size="0x8" offset="0x10" hostOffset="0x0" hostSize="0x8" type="char*"/>
+          <arg name="string2" addressQualifier="1" id="1" port="M_AXI_GMEM" size="0x8" offset="0x1C" hostOffset="0x0" hostSize="0x8" type="char*"/>
+          <arg name="max_index" addressQualifier="1" id="2" port="M_AXI_GMEM" size="0x8" offset="0x28" hostOffset="0x0" hostSize="0x8" type="int*"/>
+          <arg name="similarity_matrix" addressQualifier="1" id="3" port="M_AXI_GMEM" size="0x8" offset="0x34" hostOffset="0x0" hostSize="0x8" type="int*"/>
+          <arg name="direction_matrix" addressQualifier="1" id="4" port="M_AXI_GMEM" size="0x8" offset="0x40" hostOffset="0x0" hostSize="0x8" type="short*"/>
+          <compileWorkGroupSize x="1" y="1" z="1"/>
+          <maxWorkGroupSize x="1" y="1" z="1"/>
+          <string_table/>
+          <instance name="compute_matrices_1">
+            <addrRemap base="0x00000000" port="S_AXI_CONTROL"/>
+          </instance>
+        </kernel>
+      </core>
+    </device>
+  </platform>
+</project>

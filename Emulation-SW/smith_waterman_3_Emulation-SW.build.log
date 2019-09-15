@@ -1,0 +1,6 @@
+22:10:17 **** Incremental Build of configuration Emulation-SW for project smith_waterman_3 ****
+make -j8 incremental 
+make: Nothing to be done for `incremental'.
+
+22:10:17 Build Finished (took 67ms)
+

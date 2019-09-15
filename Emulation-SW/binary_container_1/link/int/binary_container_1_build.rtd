@@ -1,0 +1,136 @@
+{
+    "schema_version": {
+        "major": "1",
+        "minor": "0",
+        "patch": "0"
+    },
+    "build_metadata": {
+        "dsa": {
+            "vendor": "xilinx",
+            "board_id": "aws-vu9p-f1-04261818",
+            "name": "dynamic",
+            "version_major": "5",
+            "version_minor": "0",
+            "description": "",
+            "generated_by": {
+                "name": "Vivado",
+                "version": "2017.4",
+                "cl": "2193837",
+                "time_stamp": "Wed Jun  6 04:26:20 2018"
+            },
+            "board": {
+                "name": "amazon:minotaur-vu9p-f1:1.0",
+                "vendor": "amazon",
+                "part": "",
+                "board_part": ""
+            },
+            "feature_roms": [
+                {
+                    "time_epoch": "0"
+                }
+            ]
+        },
+        "xclbin": {
+            "generated_by": {
+                "name": "xocc",
+                "version": "2018.3.op",
+                "cl": "2405991",
+                "time_stamp": "Thu Dec  6 23:36:41 MST 2018",
+                "options": "\/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/unwrapped\/lnx64.o\/xocc -t sw_emu --platform \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/aws_platform\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0.xpfm --save-temps -l --nk compute_matrices:1:compute_matrices_1 -g --messageDb binary_container_1.mdb --xp misc:solution_name=link --temp_dir binary_container_1 --report_dir binary_container_1\/reports --log_dir binary_container_1\/logs --remote_ip_cache \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/ip_cache -obinary_container_1.xclbin binary_container_1\/compute_matrices.xo "
+            },
+            "user_regions": [
+                {
+                    "name": "OCL_REGION_0",
+                    "type": "clc_region",
+                    "instance_path": "WRAPPER_INST\/CL",
+                    "base_address": "",
+                    "kernels": [
+                        {
+                            "name": "compute_matrices",
+                            "ports": [
+                                {
+                                    "name": "M_AXI_GMEM",
+                                    "mode": "master",
+                                    "range": "0xFFFFFFFF",
+                                    "data_width": "32",
+                                    "port_type": "addressable",
+                                    "base": "0x0"
+                                },
+                                {
+                                    "name": "S_AXI_CONTROL",
+                                    "mode": "slave",
+                                    "range": "0x1000",
+                                    "data_width": "32",
+                                    "port_type": "addressable",
+                                    "base": "0x0"
+                                }
+                            ],
+                            "arguments": [
+                                {
+                                    "name": "string1",
+                                    "address_qualifier": "1",
+                                    "id": "0",
+                                    "port": "M_AXI_GMEM",
+                                    "size": "0x8",
+                                    "offset": "0x10",
+                                    "host_offset": "0x0",
+                                    "host_size": "0x8",
+                                    "type": "char*"
+                                },
+                                {
+                                    "name": "string2",
+                                    "address_qualifier": "1",
+                                    "id": "1",
+                                    "port": "M_AXI_GMEM",
+                                    "size": "0x8",
+                                    "offset": "0x1C",
+                                    "host_offset": "0x0",
+                                    "host_size": "0x8",
+                                    "type": "char*"
+                                },
+                                {
+                                    "name": "max_index",
+                                    "address_qualifier": "1",
+                                    "id": "2",
+                                    "port": "M_AXI_GMEM",
+                                    "size": "0x8",
+                                    "offset": "0x28",
+                                    "host_offset": "0x0",
+                                    "host_size": "0x8",
+                                    "type": "int*"
+                                },
+                                {
+                                    "name": "similarity_matrix",
+                                    "address_qualifier": "1",
+                                    "id": "3",
+                                    "port": "M_AXI_GMEM",
+                                    "size": "0x8",
+                                    "offset": "0x34",
+                                    "host_offset": "0x0",
+                                    "host_size": "0x8",
+                                    "type": "int*"
+                                },
+                                {
+                                    "name": "direction_matrix",
+                                    "address_qualifier": "1",
+                                    "id": "4",
+                                    "port": "M_AXI_GMEM",
+                                    "size": "0x8",
+                                    "offset": "0x40",
+                                    "host_offset": "0x0",
+                                    "host_size": "0x8",
+                                    "type": "short*"
+                                }
+                            ],
+                            "instances": [
+                                {
+                                    "name": "compute_matrices_1"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

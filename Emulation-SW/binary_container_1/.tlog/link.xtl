@@ -1,0 +1,504 @@
+<ENTRY>
+{
+    "EntryID": "1",
+    "Type": "CmdStep",
+    "DateTimestamp": "2019-Sep-15 21:50:00.253000",
+    "TimestampMillis": "78600253",
+    "Payload": {
+        "CmdStepID": "0f135162-a694-4a0d-a0cc-776c84304912",
+        "Command": "xocc",
+        "LogFile": "$LOGDIR\/..\/link\/link.steps.log",
+        "CommandLine": "\/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/unwrapped\/lnx64.o\/xocc --xp param:compiler.lockFlowCritSlackThreshold=0 --xp vivado_param:bd.disablePrefixForFaasIntf=1 --xp vivado_param:hd.routingContainmentAreaExpansion=true --xp vivado_param:hd.supportClockNetCrossDiffReconfigurablePartitions=1 --xp vivado_param:bitstream.enablePR=4123 --xp vivado_param:physynth.ultraRAMOptOutput=false --xp vivado_prop:run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MAX_URAM_CASCADE_HEIGHT}={1} --xp vivado_param:synth.elaboration.rodinMoreOptions={rt::set_parameter disableOregPackingUram true}  --xp \"misc:report=type report_timing_summary name impl_report_timing_summary_route_design_summary steps {route_design} runs {impl_1} options {-max_paths 10}\" --xp \"vivado_prop:run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS}={-directive sdx_optimization_effort_high}\" -t sw_emu --platform \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/aws_platform\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0.xpfm --save-temps -l --nk compute_matrices:1:compute_matrices_1 -g --messageDb binary_container_1.mdb --xp misc:solution_name=link --temp_dir binary_container_1 --report_dir binary_container_1\/reports --log_dir binary_container_1\/logs --remote_ip_cache \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/ip_cache -obinary_container_1.xclbin binary_container_1\/compute_matrices.xo ",
+        "OptionArgs": [
+            "--xp",
+            "param:compiler.lockFlowCritSlackThreshold=0",
+            "--xp",
+            "vivado_param:bd.disablePrefixForFaasIntf=1",
+            "--xp",
+            "vivado_param:hd.routingContainmentAreaExpansion=true",
+            "--xp",
+            "vivado_param:hd.supportClockNetCrossDiffReconfigurablePartitions=1",
+            "--xp",
+            "vivado_param:bitstream.enablePR=4123",
+            "--xp",
+            "vivado_param:physynth.ultraRAMOptOutput=false",
+            "--xp",
+            "vivado_prop:run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MAX_URAM_CASCADE_HEIGHT}={1}",
+            "--xp",
+            "vivado_param:synth.elaboration.rodinMoreOptions={rt::set_parameter disableOregPackingUram true}",
+            "-t",
+            "sw_emu",
+            "--platform",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/aws_platform\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0.xpfm",
+            "--save-temps",
+            "-l",
+            "--nk",
+            "compute_matrices:1:compute_matrices_1",
+            "-g",
+            "--messageDb",
+            "binary_container_1.mdb",
+            "--xp",
+            "misc:solution_name=link",
+            "--temp_dir",
+            "binary_container_1",
+            "--report_dir",
+            "binary_container_1\/reports",
+            "--log_dir",
+            "binary_container_1\/logs",
+            "--remote_ip_cache",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/ip_cache",
+            "-obinary_container_1.xclbin",
+            "binary_container_1\/compute_matrices.xo"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "2",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:00.253000",
+    "TimestampMillis": "78600253",
+    "Payload": {
+        "CmdStepID": "0f135162-a694-4a0d-a0cc-776c84304912",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "3",
+    "Type": "FlowMetaData",
+    "DateTimestamp": "2019-Sep-15 21:50:08.941000",
+    "TimestampMillis": "78608941",
+    "Payload": {
+        "HardwarePlatform": "xilinx_aws-vu9p-f1-04261818_dynamic_5_0.xpfm",
+        "HardwareDSA": "xilinx_aws-vu9p-f1-04261818_dynamic_5_0.dsa",
+        "PlatformDirectory": "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/aws_platform\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0",
+        "Runtime": "OpenCL",
+        "SystemConfiguration": "Linux",
+        "BinaryContainer": "binary_container_1",
+        "BuildFlow": "LINK",
+        "Target": "SW_EMU",
+        "Kernels": [
+            {
+                "KernelName": "compute_matrices",
+                "KernelObj": "$LOGDIR\/..\/compute_matrices.xo",
+                "KernelSrcs": [
+                    "$LOGDIR\/..\/link\/int\/xo\/compute_matrices\/compute_matrices\/cpu_sources\/compute_matrices.cpp"
+                ]
+            }
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "4",
+    "Type": "SubCmdStep",
+    "DateTimestamp": "2019-Sep-15 21:50:08.944000",
+    "TimestampMillis": "78608944",
+    "Payload": {
+        "CmdStepID": "4f435488-4205-46ce-a512-a1a5db3b0e17",
+        "Command": "regiongen",
+        "LogFile": "$LOGDIR\/..\/link\/int\/binary_container_1_regiongen.log",
+        "TransactionLogFile": "",
+        "CommandLine": "\/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/..\/runtime\/bin\/regiongen_new -v -m \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.xml -t alg -o xcl_top",
+        "OptionArgs": [
+            "-v",
+            "-m",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.xml",
+            "-t",
+            "alg",
+            "-o",
+            "xcl_top"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "5",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:08.945000",
+    "TimestampMillis": "78608945",
+    "Payload": {
+        "CmdStepID": "4f435488-4205-46ce-a512-a1a5db3b0e17",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "6",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:09.663000",
+    "TimestampMillis": "78609663",
+    "Payload": {
+        "CmdStepID": "4f435488-4205-46ce-a512-a1a5db3b0e17",
+        "Status": "Passed"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "7",
+    "Type": "SubCmdStep",
+    "DateTimestamp": "2019-Sep-15 21:50:09.665000",
+    "TimestampMillis": "78609665",
+    "Payload": {
+        "CmdStepID": "5c7a75ab-863a-4aa2-a2fe-1c159d003bdc",
+        "Command": "gcc",
+        "LogFile": "$LOGDIR\/..\/link\/int\/compute_matrices\/compute_matrices_kernel_gcc.log",
+        "TransactionLogFile": "",
+        "CommandLine": "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/tps\/lnx64\/gcc-6.2.0\/bin\/gcc -I . -I \/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/include -I \/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/auto_cc\/include -I \/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/..\/common\/technology\/autopilot\/opencl -I \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/xo\/compute_matrices\/compute_matrices\/cpu_sources -g -I \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/src -g -fPIC -g -c -DHLS_STREAM_THREAD_SAFE -std=c++11 -MD -MT obj\/compute_matrices.o -MP -MF obj\/compute_matrices.Cd \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/xo\/compute_matrices\/compute_matrices\/cpu_sources\/compute_matrices.cpp -o obj\/compute_matrices.o",
+        "OptionArgs": [
+            "-I",
+            ".",
+            "-I",
+            "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/include",
+            "-I",
+            "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/auto_cc\/include",
+            "-I",
+            "\/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/..\/common\/technology\/autopilot\/opencl",
+            "-I",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/xo\/compute_matrices\/compute_matrices\/cpu_sources",
+            "-g",
+            "-I",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/src",
+            "-g",
+            "-fPIC",
+            "-g",
+            "-c",
+            "-DHLS_STREAM_THREAD_SAFE",
+            "-std=c++11",
+            "-MD",
+            "-MT",
+            "obj\/compute_matrices.o",
+            "-MP",
+            "-MF",
+            "obj\/compute_matrices.Cd",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/xo\/compute_matrices\/compute_matrices\/cpu_sources\/compute_matrices.cpp",
+            "-o",
+            "obj\/compute_matrices.o"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "8",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:09.665000",
+    "TimestampMillis": "78609665",
+    "Payload": {
+        "CmdStepID": "5c7a75ab-863a-4aa2-a2fe-1c159d003bdc",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "9",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:09.773000",
+    "TimestampMillis": "78609773",
+    "Payload": {
+        "CmdStepID": "5c7a75ab-863a-4aa2-a2fe-1c159d003bdc",
+        "Status": "Passed"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "10",
+    "Type": "SubCmdStep",
+    "DateTimestamp": "2019-Sep-15 21:50:09.774000",
+    "TimestampMillis": "78609774",
+    "Payload": {
+        "CmdStepID": "85eb8a3c-fd6d-4f5a-8df3-844c0357ce61",
+        "Command": "ar",
+        "LogFile": "$LOGDIR\/..\/link\/int\/compute_matrices\/compute_matrices_ar.log",
+        "TransactionLogFile": "",
+        "CommandLine": "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/tps\/lnx64\/binutils-2.26\/bin\/ar -cr \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/compute_matrices\/compute_matrices.csim_cu.a \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/compute_matrices\/obj\/compute_matrices.o",
+        "OptionArgs": [
+            "-cr",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/compute_matrices\/compute_matrices.csim_cu.a",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/compute_matrices\/obj\/compute_matrices.o"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "11",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:09.774000",
+    "TimestampMillis": "78609774",
+    "Payload": {
+        "CmdStepID": "85eb8a3c-fd6d-4f5a-8df3-844c0357ce61",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "12",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:09.782000",
+    "TimestampMillis": "78609782",
+    "Payload": {
+        "CmdStepID": "85eb8a3c-fd6d-4f5a-8df3-844c0357ce61",
+        "Status": "Passed"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "13",
+    "Type": "SubCmdStep",
+    "DateTimestamp": "2019-Sep-15 21:50:09.783000",
+    "TimestampMillis": "78609783",
+    "Payload": {
+        "CmdStepID": "8487edc5-395b-4c11-b526-dccf5bbbf116",
+        "Command": "g++",
+        "LogFile": "$LOGDIR\/..\/link\/int\/binary_container_1_xcl_top_gpp.log",
+        "TransactionLogFile": "",
+        "CommandLine": "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/tps\/lnx64\/gcc-6.2.0\/bin\/g++ -I . -I \/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/include -I \/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/..\/common\/technology\/autopilot\/opencl -I \/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/..\/data\/emulation\/include -I \/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/auto_cc\/include -fPIC -g -DHLS_STREAM_THREAD_SAFE -std=c++11 -fpermissive -c -MD -MT obj\/xcl_top.o -MP -MF obj\/xcl_top.CXXd xcl_top.cpp -o obj\/xcl_top.o",
+        "OptionArgs": [
+            "-I",
+            ".",
+            "-I",
+            "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/include",
+            "-I",
+            "\/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/..\/common\/technology\/autopilot\/opencl",
+            "-I",
+            "\/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/..\/data\/emulation\/include",
+            "-I",
+            "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/auto_cc\/include",
+            "-fPIC",
+            "-g",
+            "-DHLS_STREAM_THREAD_SAFE",
+            "-std=c++11",
+            "-fpermissive",
+            "-c",
+            "-MD",
+            "-MT",
+            "obj\/xcl_top.o",
+            "-MP",
+            "-MF",
+            "obj\/xcl_top.CXXd",
+            "xcl_top.cpp",
+            "-o",
+            "obj\/xcl_top.o"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "14",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:09.783000",
+    "TimestampMillis": "78609783",
+    "Payload": {
+        "CmdStepID": "8487edc5-395b-4c11-b526-dccf5bbbf116",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "15",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:11.243000",
+    "TimestampMillis": "78611243",
+    "Payload": {
+        "CmdStepID": "8487edc5-395b-4c11-b526-dccf5bbbf116",
+        "Status": "Passed"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "16",
+    "Type": "SubCmdStep",
+    "DateTimestamp": "2019-Sep-15 21:50:11.244000",
+    "TimestampMillis": "78611244",
+    "Payload": {
+        "CmdStepID": "74fcaa94-ad83-40eb-b3b6-5043248370ec",
+        "Command": "g++",
+        "LogFile": "$LOGDIR\/..\/link\/int\/binary_container_1_top_gpp.log",
+        "TransactionLogFile": "",
+        "CommandLine": "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/tps\/lnx64\/gcc-6.2.0\/bin\/g++ -fPIC -DHLS_STREAM_THREAD_SAFE -std=c++11 -Wall -shared -Wl,--whole-archive,-soname,binary_container_1.so -o binary_container_1.so compute_matrices\/compute_matrices.csim_cu.a obj\/xcl_top.o -Wl,--no-whole-archive -Wl,--as-needed -L \/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lib\/lnx64.o -lhlsmathsim -L \/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/fpo_v7_0 -lgmp -lmpfr -lIp_floating_point_v7_0_bitacc_cmodel -Wl,-rpath,\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/fpo_v7_0 -L \/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/fft_v9_1 -lIp_xfft_v9_1_bitacc_cmodel -L \/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/fir_v7_0 -lgmp -lIp_fir_compiler_v7_2_bitacc_cmodel -L \/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/lib\/csim -lhlsmc++-GCC46",
+        "OptionArgs": [
+            "-fPIC",
+            "-DHLS_STREAM_THREAD_SAFE",
+            "-std=c++11",
+            "-Wall",
+            "-shared",
+            "-Wl,--whole-archive,-soname,binary_container_1.so",
+            "-o",
+            "binary_container_1.so",
+            "compute_matrices\/compute_matrices.csim_cu.a",
+            "obj\/xcl_top.o",
+            "-Wl,--no-whole-archive",
+            "-Wl,--as-needed",
+            "-L",
+            "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lib\/lnx64.o",
+            "-lhlsmathsim",
+            "-L",
+            "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/fpo_v7_0",
+            "-lgmp",
+            "-lmpfr",
+            "-lIp_floating_point_v7_0_bitacc_cmodel",
+            "-Wl,-rpath,\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/fpo_v7_0",
+            "-L",
+            "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/fft_v9_1",
+            "-lIp_xfft_v9_1_bitacc_cmodel",
+            "-L",
+            "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/tools\/fir_v7_0",
+            "-lgmp",
+            "-lIp_fir_compiler_v7_2_bitacc_cmodel",
+            "-L",
+            "\/opt\/Xilinx\/Vivado\/2018.3.op2405991\/bin\/..\/lnx64\/lib\/csim",
+            "-lhlsmc++-GCC46"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "17",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:11.244000",
+    "TimestampMillis": "78611244",
+    "Payload": {
+        "CmdStepID": "74fcaa94-ad83-40eb-b3b6-5043248370ec",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "18",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:11.389000",
+    "TimestampMillis": "78611389",
+    "Payload": {
+        "CmdStepID": "74fcaa94-ad83-40eb-b3b6-5043248370ec",
+        "Status": "Passed"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "19",
+    "Type": "SubCmdStep",
+    "DateTimestamp": "2019-Sep-15 21:50:11.391000",
+    "TimestampMillis": "78611391",
+    "Payload": {
+        "CmdStepID": "502d5611-41e7-47dc-811d-efba1e33f7e6",
+        "Command": "xclbinutil",
+        "LogFile": "$LOGDIR\/..\/link\/int\/binary_container_1_xclbinutil.log",
+        "TransactionLogFile": "",
+        "CommandLine": "\/opt\/xilinx\/xrt\/bin\/xclbinutil --add-section BITSTREAM:RAW:\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.so --force --key-value SYS:mode:sw_emu --add-section BUILD_METADATA:JSON:\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1_build.rtd --add-section EMBEDDED_METADATA:RAW:\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.xml --add-section DEBUG_DATA:RAW:\/dev\/null --output \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.xcp",
+        "OptionArgs": [
+            "--add-section",
+            "BITSTREAM:RAW:\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.so",
+            "--force",
+            "--key-value",
+            "SYS:mode:sw_emu",
+            "--add-section",
+            "BUILD_METADATA:JSON:\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1_build.rtd",
+            "--add-section",
+            "EMBEDDED_METADATA:RAW:\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.xml",
+            "--add-section",
+            "DEBUG_DATA:RAW:\/dev\/null",
+            "--output",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.xcp"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "20",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:11.391000",
+    "TimestampMillis": "78611391",
+    "Payload": {
+        "CmdStepID": "502d5611-41e7-47dc-811d-efba1e33f7e6",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "21",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:11.405000",
+    "TimestampMillis": "78611405",
+    "Payload": {
+        "CmdStepID": "502d5611-41e7-47dc-811d-efba1e33f7e6",
+        "Status": "Passed"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "22",
+    "Type": "SubCmdStep",
+    "DateTimestamp": "2019-Sep-15 21:50:11.406000",
+    "TimestampMillis": "78611406",
+    "Payload": {
+        "CmdStepID": "bf07ad15-b926-4c8a-b206-ad8260e5715e",
+        "Command": "xclbinutil",
+        "LogFile": "$LOGDIR\/..\/link\/int\/binary_container_1.xclbin.info",
+        "TransactionLogFile": "",
+        "CommandLine": "\/opt\/xilinx\/xrt\/bin\/xclbinutil --quiet --info --input \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.xcp",
+        "OptionArgs": [
+            "--quiet",
+            "--info",
+            "--input",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/link\/int\/binary_container_1.xcp"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "23",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:11.406000",
+    "TimestampMillis": "78611406",
+    "Payload": {
+        "CmdStepID": "bf07ad15-b926-4c8a-b206-ad8260e5715e",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "24",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:11.410000",
+    "TimestampMillis": "78611410",
+    "Payload": {
+        "CmdStepID": "bf07ad15-b926-4c8a-b206-ad8260e5715e",
+        "Status": "Passed"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "25",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:50:11.415000",
+    "TimestampMillis": "78611415",
+    "Payload": {
+        "CmdStepID": "0f135162-a694-4a0d-a0cc-776c84304912",
+        "Status": "Passed"
+    }
+}
+</ENTRY>

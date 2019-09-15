@@ -1,0 +1,2 @@
+performing high-level synthesis for kernel: compute_matrices
+Log file: /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/vivado_hls.log

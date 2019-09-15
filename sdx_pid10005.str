@@ -1,0 +1,73 @@
+/*
+
+Xilinx SDx v2018.3.op (64-bit) [Major: 2018, Minor: 3]
+SW Build: 2405991 on Thu Dec 6 23:37:15 MST 2018
+
+Process ID (PID): 10005
+License: Customer
+
+Current time: 	Sun Sep 15 22:08:03 UTC 2019
+Time zone: 	Coordinated Universal Time (UTC)
+
+OS: CentOS Linux release 7.6.1810 (Core)
+OS Version: 3.10.0-957.5.1.el7.x86_64
+OS Architecture: amd64
+Available processors (cores): 8
+
+Display: :1
+Screen size: 1680x1048
+Screen resolution (DPI): 96
+Available screens: 1
+Available disk space: 5 GB
+
+Java version: 	9.0.4 64-bit
+Java home: 	/opt/Xilinx/SDx/2018.3.op2405991/tps/lnx64/jre9.0.4
+Java executable location: 	/opt/Xilinx/SDx/2018.3.op2405991/tps/lnx64/jre9.0.4/bin/java
+Java initial memory (-Xms): 	64 MB
+Java maximum memory (-Xmx):	 4 GB
+
+Java library paths: /opt/Xilinx/SDx/2018.3.op2405991/lib/lnx64.o/Default:/opt/Xilinx/SDx/2018.3.op2405991/lib/lnx64.o:/opt/Xilinx/SDx/2018.3.op2405991/tps/lnx64/jre9.0.4/lib/:/opt/Xilinx/SDx/2018.3.op2405991/tps/lnx64/jre9.0.4/lib//server:/opt/Xilinx/SDK/2018.3.op2405991/lib/lnx64.o:/opt/Xilinx/SDx/2018.3.op2405991/lib/lnx64.o/Default:/opt/Xilinx/SDx/2018.3.op2405991/lib/lnx64.o:/opt/xilinx/xrt/lib::/opt/Xilinx/SDx/2018.3.op2405991/bin/../lnx64/tools/dot/lib:/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib
+
+Java class paths: /opt/Xilinx/SDx/2018.3.op2405991/eclipse/lnx64.o//plugins/org.eclipse.equinox.launcher_1.4.0.v20161219-1356.jar
+LD_LIBRARY_PATH: /opt/Xilinx/SDx
+
+User name: 	centos
+User home directory: /home/centos
+User working directory: /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /opt/Xilinx/SDx
+HDI_APPROOT: /opt/Xilinx/SDx/2018.3.op2405991
+RDI_DATADIR: /opt/Xilinx/SDx/2018.3.op2405991/data
+RDI_BINDIR: /opt/Xilinx/SDx/2018.3.op2405991/bin
+
+SDx preferences directory: /home/centos/.Xilinx/SDx/2018.3/
+SDx workspace directory: /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3
+SDx workspace log file location: /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/.metadata/.log
+Engine tmp dir: 	./.Xil/sdx-10005-ip-172-31-16-103.us-west-2.compute.internal
+
+Xilinx Environment Variables
+----------------------------
+XILINX_DSP: 
+XILINX_PLANAHEAD: /opt/Xilinx/SDx/2018.3.op2405991
+XILINX_SDK: /opt/Xilinx/SDK/2018.3.op2405991
+XILINX_SDX: /opt/Xilinx/SDx/2018.3.op2405991
+XILINX_VIVADO: /opt/Xilinx/Vivado/2018.3.op2405991
+XILINX_VIVADO_HLS: /opt/Xilinx/Vivado/2018.3.op2405991
+XILINX_XRT: /opt/xilinx/xrt
+_RDI_DONT_SET_XILINX_AS_PATH: True
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+selectProjectExplorer("smith_waterman_3", "ProjectExplorer", "TreeViewer.NavigatorContentServiceContentProvider");
+selectToolBarButton("Build Emulation-SW for project smith_waterman_3", "smith_waterman_3", "WorkbenchWindow", "ToolItem.BUILD_EMULATION_SW");
+selectToolBarButton("Run", "smith_waterman_3", "WorkbenchWindow", "ToolItem.RUN");
+selectToolBarButton("Build Emulation-SW for project smith_waterman_3", "smith_waterman_3", "WorkbenchWindow", "ToolItem.BUILD_EMULATION_SW");
+selectToolBarButton("Run", "smith_waterman_3", "WorkbenchWindow", "ToolItem.RUN");
+selectToolBarButton("Build Emulation-SW for project smith_waterman_3", "smith_waterman_3", "WorkbenchWindow", "ToolItem.BUILD_EMULATION_SW");
+selectToolBarButton("Run", "smith_waterman_3", "WorkbenchWindow", "ToolItem.RUN");

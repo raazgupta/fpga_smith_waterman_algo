@@ -1,0 +1,135 @@
+<ENTRY>
+{
+    "EntryID": "1",
+    "Type": "CmdStep",
+    "DateTimestamp": "2019-Sep-15 21:49:41.997000",
+    "TimestampMillis": "78581997",
+    "Payload": {
+        "CmdStepID": "65b4b26e-1ab1-4af7-94ab-87996c25c516",
+        "Command": "xocc",
+        "LogFile": "$LOGDIR\/..\/compute_matrices\/compute_matrices.steps.log",
+        "CommandLine": "\/opt\/Xilinx\/SDx\/2018.3.op2405991\/bin\/unwrapped\/lnx64.o\/xocc  --xp \"misc:report=type report_timing_summary name impl_report_timing_summary_route_design_summary steps {route_design} runs {impl_1} options {-max_paths 10}\" --xp \"vivado_prop:run.__KERNEL__.{STEPS.SYNTH_DESIGN.ARGS.MORE OPTIONS}={-directive sdx_optimization_effort_high}\" -t sw_emu --platform \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/aws_platform\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0.xpfm --save-temps -c -k compute_matrices -g --messageDb binary_container_1\/compute_matrices.mdb -I..\/src --xp misc:solution_name=compute_matrices --temp_dir binary_container_1 --report_dir binary_container_1\/reports --log_dir binary_container_1\/logs -obinary_container_1\/compute_matrices.xo ..\/src\/compute_matrices.cpp ",
+        "OptionArgs": [
+            "-t",
+            "sw_emu",
+            "--platform",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/aws_platform\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0.xpfm",
+            "--save-temps",
+            "-c",
+            "-k",
+            "compute_matrices",
+            "-g",
+            "--messageDb",
+            "binary_container_1\/compute_matrices.mdb",
+            "-I..\/src",
+            "--xp",
+            "misc:solution_name=compute_matrices",
+            "--temp_dir",
+            "binary_container_1",
+            "--report_dir",
+            "binary_container_1\/reports",
+            "--log_dir",
+            "binary_container_1\/logs",
+            "-obinary_container_1\/compute_matrices.xo",
+            "..\/src\/compute_matrices.cpp"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "2",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:49:41.997000",
+    "TimestampMillis": "78581997",
+    "Payload": {
+        "CmdStepID": "65b4b26e-1ab1-4af7-94ab-87996c25c516",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "3",
+    "Type": "FlowMetaData",
+    "DateTimestamp": "2019-Sep-15 21:49:50.657000",
+    "TimestampMillis": "78590657",
+    "Payload": {
+        "HardwarePlatform": "xilinx_aws-vu9p-f1-04261818_dynamic_5_0.xpfm",
+        "HardwareDSA": "xilinx_aws-vu9p-f1-04261818_dynamic_5_0.dsa",
+        "PlatformDirectory": "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/aws_platform\/xilinx_aws-vu9p-f1-04261818_dynamic_5_0",
+        "Runtime": "OpenCL",
+        "SystemConfiguration": "Linux",
+        "BinaryContainer": "",
+        "BuildFlow": "COMPILE",
+        "Target": "SW_EMU",
+        "Kernels": [
+            {
+                "KernelName": "compute_matrices",
+                "KernelObj": "$LOGDIR\/..\/compute_matrices.xo",
+                "KernelSrcs": [
+                    "$LOGDIR\/..\/..\/..\/src\/compute_matrices.cpp"
+                ]
+            }
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "4",
+    "Type": "SubCmdStep",
+    "DateTimestamp": "2019-Sep-15 21:49:50.660000",
+    "TimestampMillis": "78590660",
+    "Payload": {
+        "CmdStepID": "b9ec3a93-6ac3-4fd2-8427-c2d2abaeb5c7",
+        "Command": "vivado_hls",
+        "LogFile": "$LOGDIR\/..\/compute_matrices\/compute_matrices\/vivado_hls.log",
+        "TransactionLogFile": "",
+        "CommandLine": "vivado_hls -f \/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/compute_matrices\/compute_matrices\/compute_matrices.tcl -messageDb vivado_hls.pb",
+        "OptionArgs": [
+            "vivado_hls",
+            "-f",
+            "\/home\/centos\/src\/project_data\/aws-fpga\/SDAccel\/examples\/xilinx_2018.3\/getting_started\/host\/smith_waterman_3\/Emulation-SW\/binary_container_1\/compute_matrices\/compute_matrices\/compute_matrices.tcl",
+            "-messageDb",
+            "vivado_hls.pb"
+        ]
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "5",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:49:50.660000",
+    "TimestampMillis": "78590660",
+    "Payload": {
+        "CmdStepID": "b9ec3a93-6ac3-4fd2-8427-c2d2abaeb5c7",
+        "Status": "Start"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "6",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:49:58.827000",
+    "TimestampMillis": "78598827",
+    "Payload": {
+        "CmdStepID": "b9ec3a93-6ac3-4fd2-8427-c2d2abaeb5c7",
+        "Status": "Passed"
+    }
+}
+</ENTRY>
+<ENTRY>
+{
+    "EntryID": "7",
+    "Type": "Status",
+    "DateTimestamp": "2019-Sep-15 21:49:58.833000",
+    "TimestampMillis": "78598833",
+    "Payload": {
+        "CmdStepID": "65b4b26e-1ab1-4af7-94ab-87996c25c516",
+        "Status": "Passed"
+    }
+}
+</ENTRY>

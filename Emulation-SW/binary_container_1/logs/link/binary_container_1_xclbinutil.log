@@ -1,0 +1,26 @@
+XRT Build Version: 2.1.0
+       Build Date: 2019-02-20 21:22:33
+          Hash ID: 3636217b633930ed4815abd598324691ca25c2f3
+Creating a default 'in-memory' xclbin image.
+
+Section: 'BITSTREAM'(0) was successfully added.
+Size   : 190184 bytes
+Format : RAW
+File   : '/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/link/int/binary_container_1.so'
+
+Section: 'BUILD_METADATA'(14) was successfully added.
+Size   : 2791 bytes
+Format : JSON
+File   : '/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/link/int/binary_container_1_build.rtd'
+
+Section: 'EMBEDDED_METADATA'(2) was successfully added.
+Size   : 2667 bytes
+Format : RAW
+File   : '/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/link/int/binary_container_1.xml'
+
+Section: 'DEBUG_DATA'(4) was successfully added.
+Size   : 0 bytes
+Format : RAW
+File   : '/dev/null'
+Successfully wrote (200378 bytes) to the output file: /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/link/int/binary_container_1.xcp
+Exiting

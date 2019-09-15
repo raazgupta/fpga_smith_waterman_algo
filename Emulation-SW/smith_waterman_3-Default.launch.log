@@ -1,0 +1,11 @@
+starting HOST code 
+array defined! 
+ERROR: xclProbe-scan failed at fpga_pci_get_all_slot_specs
+xclProbe found 0 FPGA slots with xocl driver running
+Found Platform
+Platform Name: Xilinx
+XCLBIN File Name: compute_matrices
+INFO: Importing ../binary_container_1.xclbin
+Loading: '../binary_container_1.xclbin'
+both ended
+computation ended!- RESULTS CORRECT 

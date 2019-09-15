@@ -1,0 +1,43 @@
+
+*** Running vivado_hls
+    with args -f compute_matrices.tcl -messageDb vivado_hls.pb
+
+
+****** Vivado(TM) HLS - High-Level Synthesis from C, C++ and SystemC v2018.3.op (64-bit)
+  **** SW Build 2405991 on Thu Dec  6 23:36:41 MST 2018
+  **** IP Build 2404404 on Fri Dec  7 01:43:56 MST 2018
+    ** Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+
+source /opt/Xilinx/Vivado/2018.3.op2405991/scripts/vivado_hls/hls.tcl -notrace
+INFO: [HLS 200-10] Running '/opt/Xilinx/Vivado/2018.3.op2405991/bin/unwrapped/lnx64.o/vivado_hls'
+INFO: [HLS 200-10] For user 'centos' on host 'ip-172-31-16-103.us-west-2.compute.internal' (Linux_x86_64 version 3.10.0-957.5.1.el7.x86_64) on Sun Sep 15 21:49:53 UTC 2019
+INFO: [HLS 200-10] On os "CentOS Linux release 7.6.1810 (Core) "
+INFO: [HLS 200-10] In directory '/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices'
+INFO: [HLS 200-10] Creating and opening project '/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices'.
+INFO: [HLS 200-10] Adding design file '/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src/compute_matrices.cpp' to the project
+INFO: [HLS 200-10] Creating and opening solution '/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution'.
+INFO: [HLS 200-10] Setting target device to 'xcvu9p-flgb2104-2-i'
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 4ns.
+INFO: [HLS 200-435] Setting 'config_sdx -optimization_level' configuration: config_export -vivado_phys_opt=none
+INFO: [HLS 200-435] Setting 'config_sdx -optimization_level' configuration: config_bind -effort=medium
+INFO: [HLS 200-435] Setting 'config_sdx -optimization_level' configuration: config_schedule -effort=medium
+INFO: [HLS 200-435] Setting 'config_sdx -profile' configuration: config_rtl -stall_sig_gen=1
+INFO: [HLS 200-435] Setting 'config_sdx -profile' configuration: config_rtl -profile=1
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_compile -pipeline_loops=64
+INFO: [XFORM 203-1171] Pipeline the innermost loop with trip count more than 64 or its parent loop when its trip count is less than or equal 64.
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_compile -name_max_length=256
+INFO: [XFORM 203-1161] The maximum of name length is set into 256.
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_schedule -enable_dsp_full_reg=1
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_rtl -register_reset_num=3
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_rtl -auto_prefix=1
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_rtl -enable_maxiConservative=1
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_interface -m_axi_addr64=1
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: set_clock_uncertainty 27%
+INFO: [SYN 201-201] Setting up clock 'default' with an uncertainty of 1.08ns.
+INFO: [SYN 201-201] Setting up clock 'default' with an uncertainty of 1.08ns.
+INFO: [SCHED 204-61] Option 'relax_ii_for_timing' is enabled, will increase II to preserve clock frequency constraints.
+INFO: [HLS 200-10] Analyzing design file '/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src/compute_matrices.cpp' ... 
+INFO: [HLS 200-111] Finished Linking Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 529.305 ; gain = 4.223 ; free physical = 10405 ; free virtual = 33313
+INFO: [HLS 200-111] Finished Checking Pragmas Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 529.305 ; gain = 4.223 ; free physical = 10405 ; free virtual = 33313
+Vivado HLS completed successfully
+INFO: [Common 17-206] Exiting vivado_hls at Sun Sep 15 21:49:58 2019...

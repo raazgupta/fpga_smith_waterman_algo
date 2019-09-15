@@ -1,0 +1,223 @@
+INFO-FLOW: Workspace /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution opened at Sun Sep 15 21:49:53 UTC 2019
+Execute     set_part xcvu9p-flgb2104-2-i 
+Execute       add_library xilinx/virtexuplus/virtexuplus:xcvu9p:-flgb2104:-2-i 
+Execute         get_default_platform 
+Execute         license_isbetapart xcvu9p 
+Command         license_isbetapart done; error code: 1; 
+Execute         open_platform DefaultPlatform 
+Execute         import_lib /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/virtexuplus/virtexuplus 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx.lib 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/xilinx_interface.lib 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/plb46.lib 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/fsl.lib 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/axi4.lib 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/maxi.lib 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/saxilite.lib 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/dsp48.lib 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/ip/dds_compiler.lib 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/ip/xfft.lib 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/ip/xfir.lib 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx_old.lib 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx_vivado.lib 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx.hlp 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/target_info.tcl 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/xilinx_interface.hlp 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/maxi.hlp 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/saxilite.hlp 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/dsp48.hlp 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/virtexuplus/dsp48e2.hlp 
+Execute           get_default_platform 
+Execute           config_chip_info -quiet -resource  {SLICE 147780} {LUT 1182240}   {FF 2364480} {DSP48E 6840}  {BRAM 4320} {URAM 960}  
+Execute           config_chip_info -quiet -speed medium 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx.hlp 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/target_info.tcl 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/xilinx_interface.hlp 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/maxi.hlp 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/saxilite.hlp 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/dsp48.hlp 
+Execute         source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/virtexuplus/virtexuplus.gen 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/virtex.gen 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/plb46.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/fsl.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/axi4.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/nativeAXI4.gen 
+Execute                 source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/saxilite.gen 
+Execute                 source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/maxi.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/scripts/xilinxcoregen.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/XilEDKCoreGen.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/ip/dds_compiler.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/ip/util.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/ip/xfft.gen 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/ip/xfir.gen 
+Command             ap_source done; 0.12 sec.
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/dsp48.gen 
+Command           ap_source done; 0.13 sec.
+Command         ap_source done; 0.13 sec.
+Execute         get_default_platform 
+Execute         config_chip_info -quiet -resource  {SLICE 147780} {LUT 1182240}   {FF 2364480} {DSP48E 6840}  {BRAM 4320} {URAM 960}  
+Execute         config_chip_info -quiet -speed medium 
+Command       add_library done; 0.19 sec.
+Execute       add_library xilinx/virtexuplus/virtexuplus_fpv7 
+Execute         get_default_platform 
+Execute         open_platform DefaultPlatform 
+Execute         import_lib /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/virtexuplus/virtexuplus_fpv7 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx_fpv7.lib 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx_hp.lib 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx_fpv.hlp 
+Execute             source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx.hlp 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/target_info.tcl 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/xilinx_interface.hlp 
+Execute                 source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/maxi.hlp 
+Execute                 source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/interface/saxilite.hlp 
+Execute               source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/dsp48.hlp 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/virtexuplus/virtexuplus_hp.hlp 
+Execute         source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/virtexuplus/virtexuplus_fpv7.gen 
+Execute           source /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/xilinx/common/xilinx_fpv6.gen 
+INFO: [HLS 200-10] Setting target device to 'xcvu9p-flgb2104-2-i'
+Execute       get_default_platform 
+Command     set_part done; 0.25 sec.
+Execute     create_clock -period 250MHz -name default 
+Execute       config_clock -quiet -name default -period 4 -unit ns -default=false 
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 4ns.
+Execute     config_sdx -target xocc -optimization_level 0 -profile true 
+Execute       get_config_export -vivado_synth_design_args 
+Execute       get_config_export -vivado_impl_strategy 
+Execute       get_config_export -vivado_synth_strategy 
+Execute       get_config_export -vivado_phys_opt 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -optimization_level' config_export -vivado_phys_opt=none 
+INFO: [HLS 200-435] Setting 'config_sdx -optimization_level' configuration: config_export -vivado_phys_opt=none
+Execute       config_export -vivado_phys_opt=none 
+Execute       get_config_bind -effort 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -optimization_level' config_bind -effort=medium 
+INFO: [HLS 200-435] Setting 'config_sdx -optimization_level' configuration: config_bind -effort=medium
+Execute       config_bind -effort=medium 
+Execute       get_config_schedule -effort 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -optimization_level' config_schedule -effort=medium 
+INFO: [HLS 200-435] Setting 'config_sdx -optimization_level' configuration: config_schedule -effort=medium
+Execute       config_schedule -effort=medium 
+Execute       get_config_rtl -stall_sig_gen 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -profile' config_rtl -stall_sig_gen=1 
+INFO: [HLS 200-435] Setting 'config_sdx -profile' configuration: config_rtl -stall_sig_gen=1
+Execute       config_rtl -stall_sig_gen=1 
+Execute       get_config_rtl -profile 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -profile' config_rtl -profile=1 
+INFO: [HLS 200-435] Setting 'config_sdx -profile' configuration: config_rtl -profile=1
+Execute       config_rtl -profile=1 
+Execute       get_config_compile -pipeline_loops 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -target' config_compile -pipeline_loops=64 
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_compile -pipeline_loops=64
+Execute       config_compile -pipeline_loops=64 
+INFO: [XFORM 203-1171] Pipeline the innermost loop with trip count more than 64 or its parent loop when its trip count is less than or equal 64.
+Execute       get_config_compile -name_max_length 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -target' config_compile -name_max_length=256 
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_compile -name_max_length=256
+Execute       config_compile -name_max_length=256 
+INFO: [XFORM 203-1161] The maximum of name length is set into 256.
+Execute       get_config_schedule -relax_ii_for_timing 
+Execute       get_config_schedule -enable_dsp_full_reg 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -target' config_schedule -enable_dsp_full_reg=1 
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_schedule -enable_dsp_full_reg=1
+Execute       config_schedule -enable_dsp_full_reg=1 
+Execute       get_config_rtl -register_reset_num 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -target' config_rtl -register_reset_num=3 
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_rtl -register_reset_num=3
+Execute       config_rtl -register_reset_num=3 
+Execute       get_config_rtl -auto_prefix 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -target' config_rtl -auto_prefix=1 
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_rtl -auto_prefix=1
+Execute       config_rtl -auto_prefix=1 
+Execute       get_config_rtl -enable_maxiConservative 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -target' config_rtl -enable_maxiConservative=1 
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_rtl -enable_maxiConservative=1
+Execute       config_rtl -enable_maxiConservative=1 
+Execute       get_config_interface -m_axi_addr64 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -target' config_interface -m_axi_addr64=1 
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: config_interface -m_axi_addr64=1
+Execute       config_interface -m_axi_addr64=1 
+Execute       send_msg_by_id INFO @200-435@%s%s 'config_sdx -target' set_clock_uncertainty 27% 
+INFO: [HLS 200-435] Setting 'config_sdx -target' configuration: set_clock_uncertainty 27%
+Execute       set_clock_uncertainty 27% 
+Execute         get_clock_period -default -name=default 
+Execute         config_clock -quiet -name default -uncertainty 1.08 -unit % 
+INFO: [SYN 201-201] Setting up clock 'default' with an uncertainty of 1.08ns.
+Execute     config_dataflow -strict_mode warning 
+Execute     config_debug -enable 
+Execute     set_clock_uncertainty 27.000000% 
+Execute       get_clock_period -default -name=default 
+Execute       config_clock -quiet -name default -uncertainty 1.08 -unit % 
+INFO: [SYN 201-201] Setting up clock 'default' with an uncertainty of 1.08ns.
+Execute     config_interface -m_axi_addr64 
+Execute     config_compile -skip_transform 
+Execute     config_export -format ip_catalog -ipname compute_matrices 
+Execute     csynth_design 
+Execute       get_config_compile -effort 
+Execute       get_config_compile -enable_clang39 
+Execute       get_config_compile -g 
+Execute       get_config_compile -lm 
+Execute       get_config_compile -ng 
+Execute       get_config_compile -opt_fp 
+Execute       get_config_compile -skip_cdt 
+Execute       get_config_compile -skip_syncheck 
+Execute       get_config_compile -skip_transform 
+Execute       config_compile -blackbox  
+Execute       get_config_compile -keep_printf 
+Execute       elaborate -effort=medium -skip_syncheck=0 -keep_printf=0 -lm=0 -skip_cdt=0 -skip_transform=1 -ng=0 -g=0 -opt_fp=0 -from_csynth_design=1 
+Execute         get_config_schedule -relax_ii_for_timing 
+INFO: [SCHED 204-61] Option 'relax_ii_for_timing' is enabled, will increase II to preserve clock frequency constraints.
+Execute         get_config_schedule -suppress_dependence_error_break 
+INFO: [HLS 200-10] Analyzing design file '/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src/compute_matrices.cpp' ... 
+INFO-FLOW: Compiling one TU...
+Execute         is_m_axi_addr64 
+INFO-FLOW: Handling /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src/compute_matrices.cpp as C++
+Execute         get_default_platform 
+Execute         is_encrypted /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src/compute_matrices.cpp 
+Execute         get_default_platform 
+INFO-FLOW: Running: GCC PP
+INFO-FLOW: Source preprocessing
+Execute         clang  -fno-limit-debug-info -gcc-toolchain "/opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/gcc" -hls  -fno-exceptions  -D__llvm__  -E "/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src/compute_matrices.cpp"   -g -I/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src  -fno-math-errno -c -emit-llvm -O0  -mllvm -disable-llvm-optzns -fno-threadsafe-statics  -fno-use-cxa-atexit  -fno-threadsafe-statics -fno-use-cxa-atexit -D__CLANG_3_1__ -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I "/opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot" -I "/opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot/ap_sysc" -include etc/autopilot_ssdm_op.h -D__DSP48E2__  -o "/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp" 
+INFO-FLOW: exec /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang/bin/clang -fno-limit-debug-info -gcc-toolchain /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/gcc -hls -fno-exceptions -D__llvm__ -E /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src/compute_matrices.cpp -g -I/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src -fno-math-errno -c -emit-llvm -O0 -mllvm -disable-llvm-optzns -fno-threadsafe-statics -fno-use-cxa-atexit -fno-threadsafe-statics -fno-use-cxa-atexit -D__CLANG_3_1__ -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot -I /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot/ap_sysc -include etc/autopilot_ssdm_op.h -D__DSP48E2__ -o /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp
+Command         clang done; 1.4 sec.
+Execute         tidy_31 xilinx-xfmat-array-geometry /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp std=gnu++98 
+INFO-FLOW: exec /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang-3.9-csynth/bin/tidy-3.1 -header-filter=.* -checks=-*,xilinx-xfmat-array-geometry -quiet -fix /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp -- -std=gnu++98 -fhls -ferror-limit=0
+INFO-FLOW: Syntax Checking before pre-processing...
+Execute         clang -syntaxcheck -src /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp  -fno-limit-debug-info -gcc-toolchain "/opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/gcc" -hls  -g -I/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src  -fno-math-errno -c -emit-llvm -O0  -mllvm -disable-llvm-optzns -fno-threadsafe-statics  -fno-use-cxa-atexit  -fno-threadsafe-statics -fno-use-cxa-atexit -D__CLANG_3_1__ -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I "/opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot" -I "/opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot/ap_sysc" -include etc/autopilot_ssdm_op.h -D__DSP48E2__  "/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp"  -o "/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/useless.bc"  
+INFO-FLOW: exec /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang/bin/clang -fno-limit-debug-info -gcc-toolchain /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/gcc -hls -g -I/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src -fno-math-errno -c -emit-llvm -O0 -mllvm -disable-llvm-optzns -fno-threadsafe-statics -fno-use-cxa-atexit -fno-threadsafe-statics -fno-use-cxa-atexit -D__CLANG_3_1__ -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot -I /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot/ap_sysc -include etc/autopilot_ssdm_op.h -D__DSP48E2__ /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp -o /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/useless.bc
+Command         clang done; 1.36 sec.
+INFO-FLOW: Done: GCC PP time: 2.8 seconds per iteration
+Execute         list_core -type functional_unit 
+Execute         tidy_31 xilinx-systemc-detector /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp std=gnu++98 -directive=/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/.systemc_flag 
+INFO-FLOW: exec /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang-3.9-csynth/bin/tidy-3.1 -header-filter=.* -checks=-*,xilinx-systemc-detector -import-directive=/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/.systemc_flag -quiet -fix-errors /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp -- -std=gnu++98 -fhls -ferror-limit=0
+INFO-FLOW: Running: tidy-3.1 CDT preprocess
+Execute         tidy_31 xilinx-directive2pragma /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp std=gnu++98 -directive=/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/all.directive.json 
+INFO-FLOW: exec /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang-3.9-csynth/bin/tidy-3.1 -header-filter=.* -checks=-*,xilinx-directive2pragma -import-directive=/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/all.directive.json -quiet -fix-errors /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp -- -std=gnu++98 -fhls -ferror-limit=0
+Execute         get_config_dataflow -strict_mode 
+Execute         ap_eval exec -ignorestderr /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang-3.9-csynth/bin/xilinx-dataflow-lawyer -export-fixes=/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/xilinx-dataflow-lawyer.compute_matrices.pp.0.cpp.diag.yml /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp -- -std=gnu++98 -fhls -ferror-limit=0 -fstrict-dataflow > /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/xilinx-dataflow-lawyer.compute_matrices.pp.0.cpp.out.log 2> /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/xilinx-dataflow-lawyer.compute_matrices.pp.0.cpp.err.log 
+Execute         tidy_31 -errorcheck xilinx-constantarray-param,xilinx-resource-pragma-transformer,xilinx-xfmat-array-geometry /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp std=gnu++98 
+Execute           ap_eval exec -ignorestderr /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang-3.9-csynth/bin/tidy-3.1 -export-fixes=/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/tidy-3.1.compute_matrices.pp.0.cpp.diag.yml -header-filter=.* -checks=-*,xilinx-constantarray-param,xilinx-resource-pragma-transformer,xilinx-xfmat-array-geometry -quiet -fix-errors /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp -- -std=gnu++98 -fhls -ferror-limit=0 > /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/tidy-3.1.compute_matrices.pp.0.cpp.out.log 2> /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/tidy-3.1.compute_matrices.pp.0.cpp.err.log 
+Execute           ap_eval exec -ignorestderr /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang-3.9-csynth/bin/xilinx-legacy-rewriter /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pp.0.cpp -- -std=gnu++98 -fhls -ferror-limit=0 > /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/xilinx-legacy-rewriter.compute_matrices.pp.0.cpp.out.log 2> /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/xilinx-legacy-rewriter.compute_matrices.pp.0.cpp.err.log 
+INFO-FLOW: Done: tidy-3.1 CDT preprocess time: 0.2 seconds per iteration
+INFO-FLOW: Pragma Handling...
+Execute         tidy_31 xilinx-ssdm-intrinsics-arguments /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pragma.1.cpp std=gnu++98 
+INFO-FLOW: exec /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang-3.9-csynth/bin/tidy-3.1 -header-filter=.* -checks=-*,xilinx-ssdm-intrinsics-arguments -quiet -fix-errors /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pragma.1.cpp -- -std=gnu++98 -fhls -ferror-limit=0
+Execute         get_default_platform 
+INFO-FLOW: Processing labels
+Execute         clang -src /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pragma.2.cpp  -fno-limit-debug-info -gcc-toolchain /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/gcc -hls -hls-analyze-label -hls-analyze-pragma -fno-exceptions  -D__llvm__  -w  "/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pragma.2.cpp"  -g -I/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src  -fno-math-errno -c -emit-llvm -O0  -mllvm -disable-llvm-optzns -fno-threadsafe-statics  -fno-use-cxa-atexit -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I "/opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot" -I "/opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot/ap_sysc" -include etc/autopilot_ssdm_op.h -D__DSP48E2__ -g -o "/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.bc" 
+INFO-FLOW: exec /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/clang/bin/clang -fno-limit-debug-info -gcc-toolchain /opt/Xilinx/Vivado/2018.3.op2405991/lnx64/tools/gcc -hls -hls-analyze-label -hls-analyze-pragma -fno-exceptions -D__llvm__ -w /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.pragma.2.cpp -g -I/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src -fno-math-errno -c -emit-llvm -O0 -mllvm -disable-llvm-optzns -fno-threadsafe-statics -fno-use-cxa-atexit -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot -I /opt/Xilinx/Vivado/2018.3.op2405991/common/technology/autopilot/ap_sysc -include etc/autopilot_ssdm_op.h -D__DSP48E2__ -g -o /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.bc
+Command         clang done; 1.36 sec.
+INFO-FLOW: Linking Debug ...
+Execute         llvm-ld /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/compute_matrices.g.bc -hls-opt -except-internalize compute_matrices -L/opt/Xilinx/Vivado/2018.3.op2405991/lnx64/lib -lhlsm -lhlsmc++ -o /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/a.g 
+Command         llvm-ld done; 0.72 sec.
+INFO: [HLS 200-111] Finished Linking Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 529.305 ; gain = 4.223 ; free physical = 10405 ; free virtual = 33313
+INFO: [HLS 200-111] Finished Checking Pragmas Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 529.305 ; gain = 4.223 ; free physical = 10405 ; free virtual = 33313
+Execute         get_config_sdx -target 
+Execute         ::config_rtl 
+INFO-FLOW: Generating Kernel XML ...
+Execute         transform -hls -top=compute_matrices -xcl-target=hls -xcl-xmlinfo=/home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/../../../kernel.xml -xcl-profiletype=none -mem2reg -hlskernelxml /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/a.g.bc -o /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/a.cl.xml.bc -f 
+INFO-FLOW: DBG:CMD: Copying raw kernel.xml: /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/../../../kernel.xml -> /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/Emulation-SW/binary_container_1/compute_matrices/compute_matrices/compute_matrices/solution/.autopilot/db/kernel.internal.xml
+Command       elaborate done; 5.16 sec.
+Execute       get_part 
+Execute       get_config_export -sdx_tcl 
+Command     csynth_design done; 5.17 sec.
+Execute     close_project 
+Execute     cleanup_all 

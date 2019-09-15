@@ -1,0 +1,82 @@
+SDAccel Profile Summary
+Generated on: 2019-09-15 22:10:17
+Msec since Epoch: 1568585417819
+Profiled application: smith_waterman_3.exe
+Target platform: Xilinx
+Tool version: 2018.3
+Target devices: xilinx_aws-vu9p-f1-04261818_dynamic_5_0-0
+Flow mode: CPU Emulation
+
+OpenCL API Calls
+API Name,Number Of Calls,Total Time (ms),Minimum Time (ms),Average Time (ms),Maximum Time (ms),
+clFinish,1,25.6668,25.6668,25.6668,25.6668,
+clCreateProgramWithBinary,1,18.2872,18.2872,18.2872,18.2872,
+clSetKernelArg,5,11.163,0.005921,2.2326,11.0817,
+clReleaseKernel,1,0.44724,0.44724,0.44724,0.44724,
+clEnqueueMigrateMemObjects,2,0.298024,0.038895,0.149012,0.259129,
+clEnqueueTask,1,0.218499,0.218499,0.218499,0.218499,
+clReleaseMemObject,21,0.192307,0.003614,0.00915748,0.046066,
+clRetainMemObject,16,0.152249,0.00373,0.00951556,0.059458,
+clGetPlatformIDs,2,0.052657,0.00406,0.0263285,0.048597,
+clCreateContext,1,0.034715,0.034715,0.034715,0.034715,
+clCreateBuffer,5,0.034341,0.004025,0.0068682,0.017369,
+clReleaseProgram,1,0.025322,0.025322,0.025322,0.025322,
+clCreateKernel,1,0.016219,0.016219,0.016219,0.016219,
+clGetDeviceIDs,2,0.014048,0.003841,0.007024,0.010207,
+clGetDeviceInfo,2,0.011507,0.004965,0.0057535,0.006542,
+clRetainDevice,2,0.009639,0.004095,0.0048195,0.005544,
+clCreateCommandQueue,1,0.009435,0.009435,0.009435,0.009435,
+clGetPlatformInfo,2,0.008626,0.003848,0.004313,0.004778,
+clReleaseDevice,2,0.007898,0.003799,0.003949,0.004099,
+clReleaseCommandQueue,1,0.007031,0.007031,0.007031,0.007031,
+clReleaseContext,1,0.004858,0.004858,0.004858,0.004858,
+
+
+Kernel Execution
+Kernel,Number Of Enqueues,Total Time (ms),Minimum Time (ms),Average Time (ms),Maximum Time (ms),
+compute_matrices,1,13.3963,13.3963,13.3963,13.3963,
+
+
+Compute Unit Utilization
+Device,Compute Unit,Kernel,Global Work Size,Local Work Size,Number Of Calls,Total Time (ms),Minimum Time (ms),Average Time (ms),Maximum Time (ms),Clock Frequency (MHz),
+xilinx_aws-vu9p-f1-04261818_dynamic_5_0-0,compute_matrices_1,compute_matrices,1:1:1,1:1:1,1,13.1835,13.1835,13.1835,13.1835,300,
+
+
+Data Transfer: Host and Global Memory
+Context:Number of Devices,Transfer Type,Number Of Transfers,Transfer Rate (MB/s),Average Bandwidth Utilization (%),Average Size (KB),Total Time (ms),Average Time (ms),
+
+
+Data Transfer: Kernels and Global Memory
+Device,Compute Unit/Port Name,Kernel Arguments,Memory Resources,Transfer Type,Number Of Transfers,Transfer Rate (MB/s),Average Bandwidth Utilization (%),Average Size (KB),Average Latency (ns),
+
+
+Top Data Transfer: Kernels and Global Memory
+Device,Compute Unit,Number of Transfers,Average Bytes per Transfer,Transfer Efficiency (%),Total Data Transfer (MB),Total Write (MB),Total Read (MB),Total Transfer Rate (MB/s),
+
+
+Top Kernel Execution
+Kernel Instance Address,Kernel,Context ID,Command Queue ID,Device,Start Time (ms),Duration (ms),Global Work Size,Local Work Size,
+11263376,compute_matrices,0,0,xilinx_aws-vu9p-f1-04261818_dynamic_5_0-0,82.2758,13.3963,1:1:1,1:1:1,
+
+
+Top Buffer Writes
+Buffer Address,Context ID,Command Queue ID,Start Time (ms),Duration (ms),Buffer Size (KB),Writing Rate(MB/s),
+0,0,0,70.7567,N/A,3148.04,N/A,
+
+
+Top Buffer Reads
+Buffer Address,Context ID,Command Queue ID,Start Time (ms),Duration (ms),Buffer Size (KB),Reading Rate(MB/s),
+4096,0,0,95.7485,N/A,3145.73,N/A,
+
+
+PRC Parameters
+Parameter,Element,Value,
+DEVICE_EXEC_TIME,xilinx_aws-vu9p-f1-04261818_dynamic_5_0-0,13.396305,
+CU_CALLS,xilinx_aws-vu9p-f1-04261818_dynamic_5_0-0|compute_matrices_1,1,
+MEMORY_BIT_WIDTH,xilinx_aws-vu9p-f1-04261818_dynamic_5_0-0,512,
+MIGRATE_MEM,host,2,
+DDR_BANKS,,1,
+PORT_BIT_WIDTH,compute_matrices_1/m_axi_gmem,32,
+KERNEL_COUNT,compute_matrices,1,
+OBJECTS_RELEASED,all,1,
+

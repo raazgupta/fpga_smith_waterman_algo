@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root versionMajor="1" versionMinor="5">
+  <kernel name="compute_matrices" language="c" vlnv="xilinx.com:hls:compute_matrices:1.0" attributes="" hash="" preferredWorkGroupSizeMultiple="1" workGroupSize="1" debug="true" compileOptions=" -g -I /home/centos/src/project_data/aws-fpga/SDAccel/examples/xilinx_2018.3/getting_started/host/smith_waterman_3/src" profileType="" interrupt="true">
+    <ports>
+      <port name="M_AXI_GMEM" mode="master" range="0xFFFFFFFF" dataWidth="32" portType="addressable" base="0x0"/>
+      <port name="S_AXI_CONTROL" mode="slave" range="0x1000" dataWidth="32" portType="addressable" base="0x0"/>
+    </ports>
+    <args>
+      <arg name="string1" addressQualifier="1" id="0" port="M_AXI_GMEM" size="0x8" offset="0x10" hostOffset="0x0" hostSize="0x8" type="char*"/>
+      <arg name="string2" addressQualifier="1" id="1" port="M_AXI_GMEM" size="0x8" offset="0x1C" hostOffset="0x0" hostSize="0x8" type="char*"/>
+      <arg name="max_index" addressQualifier="1" id="2" port="M_AXI_GMEM" size="0x8" offset="0x28" hostOffset="0x0" hostSize="0x8" type="int*"/>
+      <arg name="similarity_matrix" addressQualifier="1" id="3" port="M_AXI_GMEM" size="0x8" offset="0x34" hostOffset="0x0" hostSize="0x8" type="int*"/>
+      <arg name="direction_matrix" addressQualifier="1" id="4" port="M_AXI_GMEM" size="0x8" offset="0x40" hostOffset="0x0" hostSize="0x8" type="short*"/>
+    </args>
+    <compileWorkGroupSize x="1" y="1" z="1"/>
+    <maxWorkGroupSize x="1" y="1" z="1"/>
+  </kernel>
+</root>
