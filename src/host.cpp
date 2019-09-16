@@ -147,14 +147,14 @@ void fillRandom(char* string, int dimension) {
 
 void fillQuery(char *query) {
     //query = '-CATTCAC';
-    //strcpy(query,"CATTCAC");
-    strcpy(query, "-CTCGCAGC");
+    strcpy(query,"-CTCGCAGC");
+    //strcpy(query, "-CTCGCAGC");
 }
 
 void fillDatabase(char *database) {
 	//database = '-CTCGCAGC';
-	//strcpy(database, "CTCGCAGC");
-	strcpy(database,"-CATTCAC");
+	strcpy(database, "-CATTCAC");
+	//strcpy(database,"-CTCGCAG");
 }
 
 int load_file_to_memory(const char *filename, char **result) {
@@ -297,6 +297,13 @@ int main(int argc, char** argv)
 	printf("both ended\n");
 
 
+	// Print Column Numbers & Query characters
+	printf("     ");
+	for (int i=0; i < N; i ++) {
+		printf("%c(%d) ",query[i],i);
+	}
+	printf("\n");
+
 	for (int i = 0; i < N * M; i++) {
 		//printf("SW[%d]: %d; HW[%d]: %d \n",i,directionMatrixSW[i],i,direction_matrixhw[i]);
 		if (directionMatrixSW[i] != direction_matrixhw[i]) {
@@ -304,7 +311,22 @@ int main(int argc, char** argv)
 					i, directionMatrixSW[i], direction_matrixhw[i]);
 			return EXIT_FAILURE;
 		}
+
+		// Print similarity and direction matrices
+		if (i % N == 0) {
+			printf("\n");
+			// Print Row Number & Database character
+			printf("%c(%d) ",database[i/N],i/N);
+		}
+		printf("%d(%d) ", similarity_matrix[i], direction_matrixhw[i]);
+
 	}
+
+	printf("\n\n");
+	printf("Max Index: %d\n", max_index[0]);
+	printf("Max Index [Row:Column]: [%d:%d]\n",max_index[0]/N, max_index[0]%N);
+	printf("Similarity Matrix value at Max Index: %d\n", similarity_matrix[max_index[0]]);
+
 
 	printf("computation ended!- RESULTS CORRECT \n");
 
