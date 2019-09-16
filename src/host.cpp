@@ -14,12 +14,12 @@
 #include <CL/opencl.h>
 #include <CL/cl_ext.h>
 
-#define N 256
-#define M 2048
+#define N 9
+#define M 8
 
-const short GAP_i = -1;
-const short GAP_d = -1;
-const short MATCH = 2;
+const short GAP_i = -5;
+const short GAP_d = -5;
+const short MATCH = 1;
 const short MISS_MATCH = -1;
 const short CENTER = 0;
 const short NORTH = 1;
@@ -138,11 +138,23 @@ void fillRandom(char* string, int dimension) {
 	string[0] = '-';
 
 	int i;
-	for (i = 0; i < dimension; i++) {
+	for (i = 1; i < dimension; i++) {
 		int randomNum = rand_lim(3);
 		string[i] = possibleLetters[randomNum];
 	}
 
+}
+
+void fillQuery(char *query) {
+    //query = '-CATTCAC';
+    //strcpy(query,"CATTCAC");
+    strcpy(query, "-CTCGCAGC");
+}
+
+void fillDatabase(char *database) {
+	//database = '-CTCGCAGC';
+	//strcpy(database, "CTCGCAGC");
+	strcpy(database,"-CATTCAC");
 }
 
 int load_file_to_memory(const char *filename, char **result) {
@@ -199,8 +211,11 @@ int main(int argc, char** argv)
 
     cl_int err;
 
-    fillRandom(query.data(), N);
-    fillRandom(database.data(), M);
+    //fillRandom(query.data(), N);
+    //fillRandom(database.data(), M);
+
+    fillQuery(query.data());
+    fillDatabase(database.data());
 
     memset(similarity_matrix.data(), 0, sizeof(int) * N * M);
     memset(direction_matrixhw.data(), 0, sizeof(short) * N * M);
@@ -273,6 +288,10 @@ int main(int argc, char** argv)
 	for(int i = 0; i < N*M; i++){
 		matrix[i] = 0;
 	}
+	for(int i= 0; i <N*M; i++) {
+		directionMatrixSW[i] = 0;
+	}
+
 	compute_matrices_sw(query.data(), database.data(),max_index_sw, matrix, directionMatrixSW );
 
 	printf("both ended\n");

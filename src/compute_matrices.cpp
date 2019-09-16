@@ -5,14 +5,14 @@ static const int NORTH_WEST = 2;
 static const int WEST = 3;
 
 // scores used for Smith Waterman similarity computation
-static const short GAP_i = -1;
-static const short GAP_d = -1;
-static const short MATCH = 2;
+static const short GAP_i = -5;
+static const short GAP_d = -5;
+static const short MATCH = 1;
 static const short MISS_MATCH = -1;
 
 
-#define N 256
-#define M 2048
+#define N 9
+#define M 8
 #define MATRIX_SIZE N * M
 
 extern "C" {
