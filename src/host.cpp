@@ -1,6 +1,3 @@
-#include "xcl2.hpp"
-#include <vector>
-
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -13,20 +10,156 @@
 #include <sys/stat.h>
 #include <CL/opencl.h>
 #include <CL/cl_ext.h>
+#include "xcl2.hpp"
 
-#define N 9
-#define M 8
+#define N 64
+#define M 128
 
-const short GAP_i = -5;
-const short GAP_d = -5;
-const short MATCH = 1;
+const short GAP_i = -1;
+const short GAP_d = -1;
+const short MATCH = 2;
 const short MISS_MATCH = -1;
 const short CENTER = 0;
 const short NORTH = 1;
 const short NORTH_WEST = 2;
 const short WEST = 3;
 
-// Computer matrices in Software
+////////////////////////////////////////////////////////////////////////////////
+
+short get(char data[], int key) {
+				const int position = (key % 4) * 2;
+				key /= 4;
+				char mask = 0;
+				mask &= 00000000;
+
+				mask |= 3 << position;
+
+				char fin_mask =0;
+				fin_mask&= 00000000;
+
+				fin_mask |= 3 << 0;
+				return (((data[key] & mask) >> ( position)) & fin_mask);
+
+			}
+
+
+unsigned short* order_matrix_blocks(unsigned short* in_matrix){
+	unsigned short * out_matrix = (unsigned short*)malloc(sizeof(unsigned short) * N * M);
+
+	int num_diag = 0;
+	int store_elem = 1;
+	int store_index;
+	int tmp_i = 0;
+	int tmp_j = 0;
+	int i = 0;
+	int j;
+
+	for(i = 0; i<(M + N - 1) * N;){
+	//while(store_elem != 0){
+		if(num_diag < M){
+			tmp_j = num_diag;
+			tmp_i = 0;
+		}else{
+			tmp_i = (num_diag + 1) - M;
+			tmp_j = M - 1;
+		}
+
+		for(j = 0; j < store_elem; j++){
+			store_index = tmp_j * N + tmp_i;
+			out_matrix[store_index] = in_matrix[i];
+			//printf("stored %d in index %d \n", out_matrix[store_index], store_index);
+			tmp_j--;
+			tmp_i++;
+			i++;
+		}
+		num_diag++;
+		if(num_diag >= M){
+			store_elem--;
+			i = num_diag * N + N - store_elem;
+		}else{
+			if(store_elem != N){
+				store_elem++;
+				i = num_diag * N;
+			}
+		}
+	}
+
+
+	return out_matrix;
+}
+
+void compute_matrices_sw_2(char *query, char *database,
+		int *max_index, int *similarity_matrix, short *direction_matrix){
+	int north = 0;
+	      int west = 0;
+	      int northwest = 0;
+
+
+	      int maxValue = 0;
+	      int localMaxIndex = 0;
+
+	      int val = 0;
+	      short dir = 0;
+	      int maxIndexSw = 0;
+
+
+	  //calculate my own SW
+	  for(int i = 0; i < N * M; i++){
+	    val = 0;
+	    dir=CENTER;
+	    if( i == 0){
+	      north = 0;
+	      northwest = 0;
+	      west = 0;
+	    }else if (i / N == 0){ //first row
+	      north = 0;
+	      northwest = 0;
+	      west = similarity_matrix[i - 1];
+	    }else if(i % N == 0){ // first col
+	      west = 0;
+	      northwest = 0;
+	      north = similarity_matrix[i - N];
+	    }else{
+	      west = similarity_matrix[i - 1];
+	      north = similarity_matrix[i - N];
+	      northwest = similarity_matrix [i - N - 1];
+	    }
+
+
+	    //all set, compute
+	    int jj = i / N;
+	    int ii = i % N;
+
+	    const short match = (query[ii] == database[jj]) ?  MATCH : MISS_MATCH;
+	    int val1 = northwest + match;
+
+
+	    if (val1 > val) {
+	      val = val1;
+	        dir = NORTH_WEST;
+	    }
+	    val1 = north + GAP_d;
+	    if (val1 > val) {
+	        val = val1;
+	        dir = NORTH;
+	    }
+	    val1 = west + GAP_i;
+	    if (val1 > val) {
+	      val = val1;
+	        dir = WEST;
+	    }
+	    //printf("val %d \n", val);
+	    similarity_matrix[i] = val;
+	    direction_matrix[i] = dir;
+
+	    if(val > maxValue){
+	      maxValue = val;
+	      maxIndexSw = i;
+	    }
+
+	  }
+}
+
 
 void compute_matrices_sw(
 	char *string1, char *string2,
@@ -138,23 +271,11 @@ void fillRandom(char* string, int dimension) {
 	string[0] = '-';
 
 	int i;
-	for (i = 1; i < dimension; i++) {
+	for (i = 0; i < dimension; i++) {
 		int randomNum = rand_lim(3);
 		string[i] = possibleLetters[randomNum];
 	}
 
-}
-
-void fillQuery(char *query) {
-    //query = '-CATTCAC';
-    strcpy(query,"-CTCGCAGC");
-    //strcpy(query, "-CTCGCAGC");
-}
-
-void fillDatabase(char *database) {
-	//database = '-CTCGCAGC';
-	strcpy(database, "-CATTCAC");
-	//strcpy(database,"-CTCGCAG");
 }
 
 int load_file_to_memory(const char *filename, char **result) {
@@ -177,108 +298,85 @@ int load_file_to_memory(const char *filename, char **result) {
 	return size;
 }
 
-
-
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
 	printf("starting HOST code \n");
 	fflush(stdout);
+	int err;                            // error code returned from api calls
 
-	// Allocate Memory in Host Memory
-    // char *query = (char*) malloc(sizeof(char) * N);
-    // char *database = (char*) malloc(sizeof(char) * M);
-    //int *similarity_matrix = (int*) malloc(sizeof(int) * N * M);
-    // short *direction_matrixhw = (short*) malloc(sizeof(short) * N * M);
-    // int *max_index = (int *) malloc(sizeof(int));
-
-
-    // std::vector<int,aligned_allocator<int>> source_in1(DATA_SIZE);
-	// std::vector<int,aligned_allocator<int>> source_in2(DATA_SIZE);
-	// std::vector<int,aligned_allocator<int>> source_hw_results(DATA_SIZE);
-	// std::vector<int,aligned_allocator<int>> source_sw_results(DATA_SIZE);
-
-	// Allocate Memory in Host Memory
-	std::vector<char,aligned_allocator<char>> query(sizeof(char) * N);
-	std::vector<char,aligned_allocator<char>> database(sizeof(char) * M);
-	std::vector<int,aligned_allocator<int>> similarity_matrix(sizeof(int) * N * M);
-	std::vector<short,aligned_allocator<short>> direction_matrixhw(sizeof(short) * N * M);
-	std::vector<int,aligned_allocator<int>> max_index(sizeof(int));
-
+	char *query = (char*) malloc(sizeof(char) * N);
+	char *database = (char*) malloc(sizeof(char) * M);
+	char *databasehw = (char*) malloc(sizeof(char) * (M + 2 *(N-1)));
+//	int *similarity_matrix = (int*) malloc(sizeof(int) * N * M);
+	char *direction_matrixhw = (char*) malloc(sizeof(char) * 256 * (N + M - 1)); //512 bits..
+//	int *max_index = (int *) malloc(sizeof(int));
 
 	printf("array defined! \n");
 
 	fflush(stdout);
 
-    cl_int err;
+	fillRandom(query, N);
+	fillRandom(database, M);
+	fillRandom(databasehw, M+2*(N-1));
 
-    //fillRandom(query.data(), N);
-    //fillRandom(database.data(), M);
+	for(int i = 0; i < N - 1 ; i ++)
+		databasehw[i] = 'P';
 
-    fillQuery(query.data());
-    fillDatabase(database.data());
+	memcpy((databasehw + N - 1), database, M);
 
-    memset(similarity_matrix.data(), 0, sizeof(int) * N * M);
-    memset(direction_matrixhw.data(), 0, sizeof(short) * N * M);
+//	memset(similarity_matrix, 0, sizeof(int) * N * M);
+	memset(direction_matrixhw, 0, sizeof(char) * 256 * (N + M - 1));
 
+	// OPENCL HOST CODE AREA START
+	    // get_xil_devices() is a utility API which will find the xilinx
+	    // platforms and will return list of devices connected to Xilinx platform
+	    std::vector<cl::Device> devices = xcl::get_xil_devices();
+	    cl::Device device = devices[0];
 
+	    OCL_CHECK(err, cl::Context context(device, NULL, NULL, NULL, &err));
+	    OCL_CHECK(err, cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
+	    OCL_CHECK(err, std::string device_name = device.getInfo<CL_DEVICE_NAME>(&err));
 
-// OPENCL HOST CODE AREA START
-    // get_xil_devices() is a utility API which will find the xilinx
-    // platforms and will return list of devices connected to Xilinx platform
-    std::vector<cl::Device> devices = xcl::get_xil_devices();
-    cl::Device device = devices[0];
+	    // find_binary_file() is a utility API which will search the xclbin file for
+	    // targeted mode (sw_emu/hw_emu/hw) and for targeted platforms.
+	    std::string binaryFile = xcl::find_binary_file(device_name,"compute_matrices");
 
-    OCL_CHECK(err, cl::Context context(device, NULL, NULL, NULL, &err));
-    OCL_CHECK(err, cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
-    OCL_CHECK(err, std::string device_name = device.getInfo<CL_DEVICE_NAME>(&err));
+	    // import_binary_file() ia a utility API which will load the binaryFile
+	    // and will return Binaries.
+	    cl::Program::Binaries bins = xcl::import_binary_file(binaryFile);
+	    devices.resize(1);
+	    OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
+	    OCL_CHECK(err, cl::Kernel krnl_compute_matrices(program,"compute_matrices", &err));
 
-    // find_binary_file() is a utility API which will search the xclbin file for
-    // targeted mode (sw_emu/hw_emu/hw) and for targeted platforms.
-    std::string binaryFile = xcl::find_binary_file(device_name,"compute_matrices");
+	    // Allocate Buffer in Global Memory
+	    // Buffers are allocated using CL_MEM_USE_HOST_PTR for efficient memory and
+	    // Device-to-host communication
+	    OCL_CHECK(err, cl::Buffer input_query   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+	    		sizeof(char) * N, query, &err));
+	    OCL_CHECK(err, cl::Buffer input_database   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+	    		sizeof(char) * (M + 2 * (N - 1)), databasehw, &err));
+	    OCL_CHECK(err, cl::Buffer output_direction_matrixhw (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+	    		sizeof(char) * 256 * (N + M - 1), direction_matrixhw, &err));
 
-    // import_binary_file() ia a utility API which will load the binaryFile
-    // and will return Binaries.
-    cl::Program::Binaries bins = xcl::import_binary_file(binaryFile);
-    devices.resize(1);
-    OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
-    OCL_CHECK(err, cl::Kernel krnl_compute_matrices(program,"compute_matrices", &err));
+	    // Copy input data to device global memory
+	    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({input_query, input_database, output_direction_matrixhw},0/* 0 means from host*/));
 
-    // Allocate Buffer in Global Memory
-    // Buffers are allocated using CL_MEM_USE_HOST_PTR for efficient memory and
-    // Device-to-host communication
-    OCL_CHECK(err, cl::Buffer input_query   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-    		sizeof(char) * N, query.data(), &err));
-    OCL_CHECK(err, cl::Buffer input_database   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-    		sizeof(char) * M, database.data(), &err));
-    OCL_CHECK(err, cl::Buffer output_similarity_matrix (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-    		sizeof(int) * M * N, similarity_matrix.data(), &err));
-    OCL_CHECK(err, cl::Buffer output_direction_matrixhw (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-    		sizeof(short) * M * N, direction_matrixhw.data(), &err));
-    OCL_CHECK(err, cl::Buffer output_max_index (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-        		sizeof(int), max_index.data(), &err));
+	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(0, input_query));
+	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(1, input_database));
+	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(2, output_direction_matrixhw));
 
-    // Copy input data to device global memory
-    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({input_query, input_database, output_similarity_matrix, output_direction_matrixhw, output_max_index},0/* 0 means from host*/));
+	    // Launch the Kernel
+	    // For HLS kernels global and local size is always (1,1,1). So, it is recommended
+	    // to always use enqueueTask() for invoking HLS kernel
+	    OCL_CHECK(err, err = q.enqueueTask(krnl_compute_matrices));
 
-    OCL_CHECK(err, err = krnl_compute_matrices.setArg(0, input_query));
-    OCL_CHECK(err, err = krnl_compute_matrices.setArg(1, input_database));
-    OCL_CHECK(err, err = krnl_compute_matrices.setArg(2, output_max_index));
-    OCL_CHECK(err, err = krnl_compute_matrices.setArg(3, output_similarity_matrix));
-    OCL_CHECK(err, err = krnl_compute_matrices.setArg(4, output_direction_matrixhw));
+	    // Copy Result from Device Global Memory to Host Local Memory
+	    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({output_direction_matrixhw},CL_MIGRATE_MEM_OBJECT_HOST));
+	    q.finish();
+	// OPENCL HOST CODE AREA END
 
-    // Launch the Kernel
-    // For HLS kernels global and local size is always (1,1,1). So, it is recommended
-    // to always use enqueueTask() for invoking HLS kernel
-    OCL_CHECK(err, err = q.enqueueTask(krnl_compute_matrices));
-
-    // Copy Result from Device Global Memory to Host Local Memory
-    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({output_similarity_matrix, output_direction_matrixhw, output_max_index},CL_MIGRATE_MEM_OBJECT_HOST));
-    q.finish();
-// OPENCL HOST CODE AREA END
-
-    // Software calculation
-    int * matrix = ( int *) malloc(
-    			sizeof( int) * N * M);
+	// Software calculation
+	int * matrix = ( int *) malloc(
+			sizeof( int) * N * M);
 	short * directionMatrixSW = ( short*) malloc(
 			sizeof( short) * N * M);
 
@@ -287,47 +385,79 @@ int main(int argc, char** argv)
 
 	for(int i = 0; i < N*M; i++){
 		matrix[i] = 0;
-	}
-	for(int i= 0; i <N*M; i++) {
 		directionMatrixSW[i] = 0;
 	}
+	compute_matrices_sw_2(query, database,max_index_sw, matrix, directionMatrixSW );
 
-	compute_matrices_sw(query.data(), database.data(),max_index_sw, matrix, directionMatrixSW );
+	unsigned short * ordered_direction_matrix = (unsigned short *)malloc(sizeof(unsigned short) * N * M);
+
+	for(int i = 0; i < N; i ++)
+		printf("%c ", query[i]);
+	printf("\n");
+
+	for(int i = 0; i < M; i ++)
+		printf("%c ", database[i]);
+	printf("\n");
+	for(int i = 0; i < M + 2 * (N -1); i ++)
+			printf("%c ", databasehw[i]);
+		printf("\n");
+
+	for(int i = 0; i < N*M; i++){
+		if(i % N == 0)
+			printf("\n");
+		printf(" %d ", directionMatrixSW[i]);
+	}
+
+	printf("hw version \n");
+
+	for(int i = 0; i < N*(N + M - 1); i++){
+		if ( i % N == 0)
+			printf("\n");
+		printf(" %d ", direction_matrixhw[i]);
+	}
+
+	int temp_index = 0;
+	int iter = 1;
+	//unsigned short tempMatrixBis[N * (N+M-1)];
+	unsigned short *tempMatrixBis = (unsigned short*)malloc(sizeof(unsigned short) * (N*(N+M-1)));
+	for(int i = 0; i < N * (N + M - 1); i++){
+		tempMatrixBis[i] = get(direction_matrixhw, temp_index);
+		temp_index++;
+		if(temp_index % N == 0){
+			temp_index = iter * 256;
+			iter++;
+		}
+	}
+
+	ordered_direction_matrix = order_matrix_blocks(tempMatrixBis);
+
+	printf("hw version \n");
+
+		for(int i = 0; i < N*M; i++){
+			if ( i % N == 0)
+				printf("\n");
+			printf(" %d ", ordered_direction_matrix[i]);
+		}
 
 	printf("both ended\n");
 
-
-	// Print Column Numbers & Query characters
-	printf("     ");
-	for (int i=0; i < N; i ++) {
-		printf("%c(%d) ",query[i],i);
-	}
-	printf("\n");
-
 	for (int i = 0; i < N * M; i++) {
-		//printf("SW[%d]: %d; HW[%d]: %d \n",i,directionMatrixSW[i],i,direction_matrixhw[i]);
-		if (directionMatrixSW[i] != direction_matrixhw[i]) {
+		if (directionMatrixSW[i] != ordered_direction_matrix[i]) {
 			printf("Error, mismatch in the results, i + %d, SW: %d, HW %d \n",
-					i, directionMatrixSW[i], direction_matrixhw[i]);
+					i, directionMatrixSW[i], ordered_direction_matrix[i]);
 			return EXIT_FAILURE;
 		}
-
-		// Print similarity and direction matrices
-		if (i % N == 0) {
-			printf("\n");
-			// Print Row Number & Database character
-			printf("%c(%d) ",database[i/N],i/N);
-		}
-		printf("%d(%d) ", similarity_matrix[i], direction_matrixhw[i]);
-
 	}
-
-	printf("\n\n");
-	printf("Max Index: %d\n", max_index[0]);
-	printf("Max Index [Row:Column]: [%d:%d]\n",max_index[0]/N, max_index[0]%N);
-	printf("Similarity Matrix value at Max Index: %d\n", similarity_matrix[max_index[0]]);
-
 
 	printf("computation ended!- RESULTS CORRECT \n");
 
+
+
+	free(matrix);
+	free(directionMatrixSW);
+	free(databasehw);
+//	free(max_index_sw);
+	free(ordered_direction_matrix);
+
+	return EXIT_SUCCESS;
 }
