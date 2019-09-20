@@ -12,12 +12,12 @@
 #include <CL/cl_ext.h>
 #include "xcl2.hpp"
 
-#define N 64
-#define M 128
+#define N 8
+#define M 16
 
-const short GAP_i = -1;
-const short GAP_d = -1;
-const short MATCH = 2;
+const short GAP_i = -5;
+const short GAP_d = -5;
+const short MATCH = 1;
 const short MISS_MATCH = -1;
 const short CENTER = 0;
 const short NORTH = 1;
@@ -25,6 +25,18 @@ const short NORTH_WEST = 2;
 const short WEST = 3;
 
 ////////////////////////////////////////////////////////////////////////////////
+
+void fillQuery(char *query) {
+    //query = '-CATTCAC';
+    strcpy(query,"CTCGCAGC");
+    //strcpy(query, "-CTCGCAGC");
+}
+
+void fillDatabase(char *database) {
+	//database = '-CTCGCAGC';
+	strcpy(database, "CATTCAC");
+	//strcpy(database,"-CTCGCAG");
+}
 
 short get(char data[], int key) {
 				const int position = (key % 4) * 2;
@@ -158,6 +170,8 @@ void compute_matrices_sw_2(char *query, char *database,
 	    }
 
 	  }
+
+	  max_index[0] = maxIndexSw;
 }
 
 
@@ -316,6 +330,10 @@ int main(int argc, char** argv) {
 
 	fillRandom(query, N);
 	fillRandom(database, M);
+
+	//fillQuery(query);
+	//fillDatabase(database);
+
 	fillRandom(databasehw, M+2*(N-1));
 
 	for(int i = 0; i < N - 1 ; i ++)
@@ -391,31 +409,50 @@ int main(int argc, char** argv) {
 
 	unsigned short * ordered_direction_matrix = (unsigned short *)malloc(sizeof(unsigned short) * N * M);
 
-	for(int i = 0; i < N; i ++)
-		printf("%c ", query[i]);
-	printf("\n");
+	printf("both ended\n\n");
 
-	for(int i = 0; i < M; i ++)
-		printf("%c ", database[i]);
-	printf("\n");
-	for(int i = 0; i < M + 2 * (N -1); i ++)
-			printf("%c ", databasehw[i]);
+	// Software Output
+	// Print Column Numbers & Query characters
+		printf("Software Output:\n");
+		printf("     ");
+		for (int i=0; i < N; i ++) {
+			printf("%c(%d) ",query[i],i);
+		}
 		printf("\n");
 
-	for(int i = 0; i < N*M; i++){
-		if(i % N == 0)
-			printf("\n");
-		printf(" %d ", directionMatrixSW[i]);
-	}
+		for (int i = 0; i < N * M; i++) {
+			// Print similarity and direction matrices
+			if (i % N == 0) {
+				printf("\n");
+				// Print Row Number & Database character
+				printf("%c(%d) ",database[i/N],i/N);
+			}
+			printf("%d(%d) ", matrix[i], directionMatrixSW[i]);
 
-	printf("hw version \n");
+		}
+		printf("\n\n");
+		printf("Max Index: %d\n", max_index_sw[0]);
+		printf("Max Index [Row:Column]: [%d:%d]\n",max_index_sw[0]/N, max_index_sw[0]%N);
+		printf("Similarity Matrix value at Max Index: %d\n", matrix[max_index_sw[0]]);
+	//
 
+	// Hardware output
+	printf("\n");
+	printf("Hardware Output:\n");
+	/*
+	printf("databasehw (M+2*(N-1):");
+	for(int i = 0; i < M + 2 * (N -1); i ++)
+			printf("%c ", databasehw[i]);
+	printf("\n");
+
+	printf("direction_matrixhw (N*(N+M-1):\n");
 	for(int i = 0; i < N*(N + M - 1); i++){
 		if ( i % N == 0)
 			printf("\n");
 		printf(" %d ", direction_matrixhw[i]);
 	}
-
+	printf("\n\n");
+	*/
 	int temp_index = 0;
 	int iter = 1;
 	//unsigned short tempMatrixBis[N * (N+M-1)];
@@ -431,16 +468,26 @@ int main(int argc, char** argv) {
 
 	ordered_direction_matrix = order_matrix_blocks(tempMatrixBis);
 
-	printf("hw version \n");
+	printf("ordered_direction_matrix (N*M):\n");
 
-		for(int i = 0; i < N*M; i++){
-			if ( i % N == 0)
-				printf("\n");
-			printf(" %d ", ordered_direction_matrix[i]);
+	printf("     ");
+	for (int i=0; i < N; i ++) {
+		printf("%c(%d) ",query[i],i);
+	}
+	printf("\n");
+	for (int i = 0; i < N * M; i++) {
+		// Print similarity and direction matrices
+		if (i % N == 0) {
+			printf("\n");
+			// Print Row Number & Database character
+			printf("%c(%d) ",database[i/N],i/N);
 		}
+		printf(" (%d) ", ordered_direction_matrix[i]);
 
-	printf("both ended\n");
+	}
+	printf("\n\n");
 
+	// Compare Hardware and Software outputs
 	for (int i = 0; i < N * M; i++) {
 		if (directionMatrixSW[i] != ordered_direction_matrix[i]) {
 			printf("Error, mismatch in the results, i + %d, SW: %d, HW %d \n",
