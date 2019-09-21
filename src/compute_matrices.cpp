@@ -31,7 +31,7 @@ void store_diagonal(int directions_index, ap_uint<512> *direction_matrix_g, ap_u
 
 
 
-void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABASE_SIZE], int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[1]){
+void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABASE_SIZE], int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[1], int *loop_max_index_value){
 
 	int databaseLocalIndex = num_diagonals;
 	int from, to;
@@ -58,6 +58,7 @@ void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABAS
 			west[index + 1] = val1;
 			compressed_diag[0].range(to,from) = NORTH_WEST;
 //			directionDiagonal[index] = NORTH_WEST;
+			val = val1;
 		} else if (val2 > val && val2 >= val3) {
 			//val2
 			northwest[index + 1] = north[index];
@@ -65,6 +66,7 @@ void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABAS
 			west[index + 1] = val2;
 			compressed_diag[0].range(to,from) = NORTH;
 //			directionDiagonal[index] = NORTH;
+			val = val2;
 		}else if (val3 > val){
 			//val3
 			northwest[index + 1] = north[index];
@@ -72,6 +74,7 @@ void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABAS
 			west[index + 1] = val3;
 			compressed_diag[0].range(to,from) = WEST;
 //			directionDiagonal[index] = WEST;
+			val = val3;
 		}else{
 			//val
 			northwest[index + 1] = north[index];
@@ -80,6 +83,12 @@ void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABAS
 			compressed_diag[0].range(to,from) = CENTER;
 //			directionDiagonal[index] = CENTER;
 		}
+
+		if(val > loop_max_index_value[1]){
+			loop_max_index_value[1] = val;
+			loop_max_index_value[0] = index;
+ 		}
+
 		databaseLocalIndex ++;
 		from -= 2;
 		to -= 2;
@@ -89,15 +98,17 @@ void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABAS
 
 
 
-void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction_matrix_g)
+void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction_matrix_g, int *max_index_value)
 {
 #pragma HLS INTERFACE m_axi port=string1_g offset=slave bundle=gmem0
 #pragma HLS INTERFACE m_axi port=string2_g offset=slave bundle=gmem0
 #pragma HLS INTERFACE m_axi port=direction_matrix_g offset=slave bundle=gmem1
+#pragma HLS INTERFACE m_axi port=max_index_value offset=slave bundle=gmem2
 
 #pragma HLS INTERFACE s_axilite port=string1_g bundle=control
 #pragma HLS INTERFACE s_axilite port=string2_g bundle=control
 #pragma HLS INTERFACE s_axilite port=direction_matrix_g bundle=control
+#pragma HLS INTERFACE s_axilite port=max_index_value bundle=control
 
 #pragma HLS INTERFACE s_axilite port=return bundle=control
 
@@ -105,6 +116,10 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 #pragma HLS ARRAY_PARTITION variable=string1 complete dim=1
 	char string2[DATABASE_SIZE];
 #pragma HLS ARRAY_PARTITION variable=string2 complete dim=1
+
+	int loop_max_index_value[2];
+	loop_max_index_value[0] = 0;
+	loop_max_index_value[1] = 0;
 
 //	short direction_matrix[DIRECTION_MATRIX_SIZE];
 //#pragma HLS ARRAY_PARTITION variable=direction_matrix complete dim=1
@@ -138,9 +153,16 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 #pragma HLS inline region recursive
 #pragma HLS PIPELINE
 
-		calculate_diagonal(num_diagonals, string1, string2, northwest, north, west, directions_index, compressed_diag);
+		calculate_diagonal(num_diagonals, string1, string2, northwest, north, west, directions_index, compressed_diag, loop_max_index_value);
 		store_diagonal(directions_index,  direction_matrix_g, compressed_diag);
 		directions_index ++;
+
+		if(loop_max_index_value[1] > max_index_value[2]){
+			max_index_value[2] = loop_max_index_value[1];
+			max_index_value[1] = loop_max_index_value[0];
+			max_index_value[0] = num_diagonals;
+		}
+
 	}
 
 //	memcpy(direction_matrix_g, direction_matrix, DIRECTION_MATRIX_SIZE * sizeof(short));

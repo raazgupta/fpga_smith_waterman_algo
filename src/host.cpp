@@ -28,13 +28,13 @@ const short WEST = 3;
 
 void fillQuery(char *query) {
     //query = '-CATTCAC';
-    strcpy(query,"CTCGCAGC");
+    strcpy(query,"ACTGGCTG");
     //strcpy(query, "-CTCGCAGC");
 }
 
 void fillDatabase(char *database) {
 	//database = '-CTCGCAGC';
-	strcpy(database, "CATTCAC");
+	strcpy(database, "ACTGACTGACTGACTG");
 	//strcpy(database,"-CTCGCAG");
 }
 
@@ -55,7 +55,7 @@ short get(char data[], int key) {
 			}
 
 
-unsigned short* order_matrix_blocks(unsigned short* in_matrix){
+unsigned short* order_matrix_blocks(unsigned short* in_matrix, int* max_index_value){
 	unsigned short * out_matrix = (unsigned short*)malloc(sizeof(unsigned short) * N * M);
 
 	int num_diag = 0;
@@ -65,6 +65,8 @@ unsigned short* order_matrix_blocks(unsigned short* in_matrix){
 	int tmp_j = 0;
 	int i = 0;
 	int j;
+
+	int max_index = max_index_value[0]*N + max_index_value[1];
 
 	for(i = 0; i<(M + N - 1) * N;){
 	//while(store_elem != 0){
@@ -79,6 +81,12 @@ unsigned short* order_matrix_blocks(unsigned short* in_matrix){
 		for(j = 0; j < store_elem; j++){
 			store_index = tmp_j * N + tmp_i;
 			out_matrix[store_index] = in_matrix[i];
+
+			if(max_index == i){
+				max_index_value[0] = store_index / N;
+				max_index_value[1] = store_index % N;
+			}
+
 			//printf("stored %d in index %d \n", out_matrix[store_index], store_index);
 			tmp_j--;
 			tmp_i++;
@@ -323,26 +331,33 @@ int main(int argc, char** argv) {
 //	int *similarity_matrix = (int*) malloc(sizeof(int) * N * M);
 	char *direction_matrixhw = (char*) malloc(sizeof(char) * 256 * (N + M - 1)); //512 bits..
 //	int *max_index = (int *) malloc(sizeof(int));
+	int *max_index_value = (int*) malloc(sizeof(int) * 3);
+
+	max_index_value[0] = 0;
+	max_index_value[1] = 0;
+	max_index_value[2] = 0;
 
 	printf("array defined! \n");
 
 	fflush(stdout);
 
-	fillRandom(query, N);
-	fillRandom(database, M);
+	//fillRandom(query, N);
+	//fillRandom(database, M);
 
-	//fillQuery(query);
-	//fillDatabase(database);
+	fillQuery(query);
+	fillDatabase(database);
 
-	fillRandom(databasehw, M+2*(N-1));
+	//fillRandom(databasehw, M+2*(N-1));
 
-	for(int i = 0; i < N - 1 ; i ++)
+	for(int i = 0; i < (M+2*(N-1)) ; i ++)
 		databasehw[i] = 'P';
 
 	memcpy((databasehw + N - 1), database, M);
 
 //	memset(similarity_matrix, 0, sizeof(int) * N * M);
 	memset(direction_matrixhw, 0, sizeof(char) * 256 * (N + M - 1));
+
+
 
 	// OPENCL HOST CODE AREA START
 	    // get_xil_devices() is a utility API which will find the xilinx
@@ -374,13 +389,16 @@ int main(int argc, char** argv) {
 	    		sizeof(char) * (M + 2 * (N - 1)), databasehw, &err));
 	    OCL_CHECK(err, cl::Buffer output_direction_matrixhw (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
 	    		sizeof(char) * 256 * (N + M - 1), direction_matrixhw, &err));
+	    OCL_CHECK(err, cl::Buffer output_max_index_value (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+	    	    		sizeof(int) * 3, max_index_value, &err));
 
 	    // Copy input data to device global memory
-	    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({input_query, input_database, output_direction_matrixhw},0/* 0 means from host*/));
+	    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({input_query, input_database, output_direction_matrixhw, output_max_index_value},0/* 0 means from host*/));
 
 	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(0, input_query));
 	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(1, input_database));
 	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(2, output_direction_matrixhw));
+	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(3, output_max_index_value));
 
 	    // Launch the Kernel
 	    // For HLS kernels global and local size is always (1,1,1). So, it is recommended
@@ -388,7 +406,7 @@ int main(int argc, char** argv) {
 	    OCL_CHECK(err, err = q.enqueueTask(krnl_compute_matrices));
 
 	    // Copy Result from Device Global Memory to Host Local Memory
-	    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({output_direction_matrixhw},CL_MIGRATE_MEM_OBJECT_HOST));
+	    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({output_direction_matrixhw, output_max_index_value},CL_MIGRATE_MEM_OBJECT_HOST));
 	    q.finish();
 	// OPENCL HOST CODE AREA END
 
@@ -439,20 +457,14 @@ int main(int argc, char** argv) {
 	// Hardware output
 	printf("\n");
 	printf("Hardware Output:\n");
-	/*
+
 	printf("databasehw (M+2*(N-1):");
 	for(int i = 0; i < M + 2 * (N -1); i ++)
 			printf("%c ", databasehw[i]);
 	printf("\n");
 
-	printf("direction_matrixhw (N*(N+M-1):\n");
-	for(int i = 0; i < N*(N + M - 1); i++){
-		if ( i % N == 0)
-			printf("\n");
-		printf(" %d ", direction_matrixhw[i]);
-	}
-	printf("\n\n");
-	*/
+
+
 	int temp_index = 0;
 	int iter = 1;
 	//unsigned short tempMatrixBis[N * (N+M-1)];
@@ -466,7 +478,17 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	ordered_direction_matrix = order_matrix_blocks(tempMatrixBis);
+	printf("direction_matrixhw (N*(N+M-1):\n");
+		for(int i = 0; i < N*(N + M - 1); i++){
+			if ( i % N == 0)
+				printf("\n");
+			printf(" %d ", tempMatrixBis[i]);
+		}
+		printf("\n\n");
+
+	ordered_direction_matrix = order_matrix_blocks(tempMatrixBis, max_index_value);
+
+	printf("Before Ordering [Row/Column/Value]: %d/%d/%d\n\n",max_index_value[0],max_index_value[1],max_index_value[2]);
 
 	printf("ordered_direction_matrix (N*M):\n");
 
@@ -485,6 +507,9 @@ int main(int argc, char** argv) {
 		printf(" (%d) ", ordered_direction_matrix[i]);
 
 	}
+	printf("\n");
+	printf("Max Index [Row:Column]: [%d:%d]\n",max_index_value[0], max_index_value[1]);
+	printf("Similarity Matrix value at Max Index: %d\n", max_index_value[2]);
 	printf("\n\n");
 
 	// Compare Hardware and Software outputs
