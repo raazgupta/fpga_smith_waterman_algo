@@ -28,7 +28,7 @@ const short WEST = 3;
 
 void fillQuery(char *query) {
     //query = '-CATTCAC';
-    strcpy(query,"ACTGGCTG");
+    strcpy(query,"ACTGCCTG");
     //strcpy(query, "-CTCGCAGC");
 }
 
@@ -498,7 +498,7 @@ int main(int argc, char** argv) {
 	}
 	printf("\n");
 	for (int i = 0; i < N * M; i++) {
-		// Print similarity and direction matrices
+		// Print direction matrix
 		if (i % N == 0) {
 			printf("\n");
 			// Print Row Number & Database character

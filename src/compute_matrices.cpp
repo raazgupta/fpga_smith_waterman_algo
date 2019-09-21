@@ -1,5 +1,6 @@
 #include <string.h>
 #include <ap_int.h>
+#include <stdio.h>
 
 
 // directions codes
@@ -19,24 +20,32 @@ static const short MISS_MATCH = -1;
 #define M 16
 #define DATABASE_SIZE M + 2 * (N - 1)
 #define DIRECTION_MATRIX_SIZE (N + M - 1) * N
+#define LOOP_INDEX_SIZE (N+M-1) * 2
 #define MATRIX_SIZE N * M
 
 extern "C" {
 
-void store_diagonal(int directions_index, ap_uint<512> *direction_matrix_g, ap_uint<512> compressed_diag[1]) {
+void store_diagonal(int directions_index, ap_uint<512> *direction_matrix_g, ap_uint<512> compressed_diag[1], int *similarity_matrix, int *similarityDiagonal) {
 
 	memcpy(direction_matrix_g + directions_index, compressed_diag, sizeof(ap_uint<512>));
+
+	store_sim_for: for(int i=0; i<N; i++){
+		similarity_matrix[directions_index*N+i] = similarityDiagonal[i];
+	}
 
 }
 
 
 
-void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABASE_SIZE], int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[1], int *loop_max_index_value){
+void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABASE_SIZE], int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[1], int similarityDiagonal[N]){
 
 	int databaseLocalIndex = num_diagonals;
 	int from, to;
 	from = N * 2 - 2;
 	to = N * 2 - 1;
+
+	//int loop_column_index = num_diagonals * 2;
+	//int loop_max_value_index = num_diagonals * 2 + 1;
 
 	calculate_diagonal_for: for(int index = N - 1; index >= 0; index --){
 		int val = 0;
@@ -84,10 +93,7 @@ void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABAS
 //			directionDiagonal[index] = CENTER;
 		}
 
-		if(val > loop_max_index_value[1]){
-			loop_max_index_value[1] = val;
-			loop_max_index_value[0] = index;
- 		}
+		similarityDiagonal[index] = val;
 
 		databaseLocalIndex ++;
 		from -= 2;
@@ -105,10 +111,12 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 #pragma HLS INTERFACE m_axi port=direction_matrix_g offset=slave bundle=gmem1
 #pragma HLS INTERFACE m_axi port=max_index_value offset=slave bundle=gmem2
 
+
 #pragma HLS INTERFACE s_axilite port=string1_g bundle=control
 #pragma HLS INTERFACE s_axilite port=string2_g bundle=control
 #pragma HLS INTERFACE s_axilite port=direction_matrix_g bundle=control
 #pragma HLS INTERFACE s_axilite port=max_index_value bundle=control
+
 
 #pragma HLS INTERFACE s_axilite port=return bundle=control
 
@@ -116,10 +124,6 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 #pragma HLS ARRAY_PARTITION variable=string1 complete dim=1
 	char string2[DATABASE_SIZE];
 #pragma HLS ARRAY_PARTITION variable=string2 complete dim=1
-
-	int loop_max_index_value[2];
-	loop_max_index_value[0] = 0;
-	loop_max_index_value[1] = 0;
 
 //	short direction_matrix[DIRECTION_MATRIX_SIZE];
 //#pragma HLS ARRAY_PARTITION variable=direction_matrix complete dim=1
@@ -133,6 +137,7 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 #pragma HLS ARRAY_PARTITION variable=west complete dim=1
 	int northwest[N+1];
 #pragma HLS ARRAY_PARTITION variable=northwest complete dim=1
+
 
 /*
 	short directionDiagonal[N];
@@ -149,21 +154,42 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 
 	int directions_index = 0;
 
-	num_diag_for: for(int num_diagonals = 0; num_diagonals < N + M - 1; num_diagonals++){
+	int similarity_matrix[DIRECTION_MATRIX_SIZE];
+//#pragma HLS ARRAY_PARTITION variable=similarity_matrix complete dim=1
+	init_sim_mat_for:for(int i = 0; i < N * (N+M-1); i++){
+		similarity_matrix[i] = 0;
+	}
+	int similarityDiagonal[N];
+#pragma HLS ARRAY_PARTITION variable=similarityDiagonal complete dim=1
+
+	num_diag_for:for(int num_diagonals = 0; num_diagonals < N + M - 1; num_diagonals++){
 #pragma HLS inline region recursive
 #pragma HLS PIPELINE
 
-		calculate_diagonal(num_diagonals, string1, string2, northwest, north, west, directions_index, compressed_diag, loop_max_index_value);
-		store_diagonal(directions_index,  direction_matrix_g, compressed_diag);
+		calculate_diagonal(num_diagonals, string1, string2, northwest, north, west, directions_index, compressed_diag, similarityDiagonal);
+		store_diagonal(directions_index,  direction_matrix_g, compressed_diag, similarity_matrix, similarityDiagonal);
 		directions_index ++;
+	}
 
-		if(loop_max_index_value[1] > max_index_value[2]){
-			max_index_value[2] = loop_max_index_value[1];
-			max_index_value[1] = loop_max_index_value[0];
-			max_index_value[0] = num_diagonals;
+	// Find max val and index in similarity matrix and store in max_index[Row,Column,Value]
+	int max_val = 0;
+	int max_index = 0;
+	printf("\nSimilarity Matrix(hardware):\n");
+	find_max_sim_for:for(int i = 0; i< N*(N+M-1); i++){
+		if(similarity_matrix[i] > max_val) {
+			max_val = similarity_matrix[i];
+			max_index = i;
 		}
+		if(i % N == 0){
+			printf("\n");
+		}
+		printf("%d ",similarity_matrix[i]);
 
 	}
+	printf("\n");
+	max_index_value[0] = max_index / N;
+	max_index_value[1] = max_index % N;
+	max_index_value[2] = max_val;
 
 //	memcpy(direction_matrix_g, direction_matrix, DIRECTION_MATRIX_SIZE * sizeof(short));
 
