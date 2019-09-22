@@ -1,6 +1,5 @@
 #include <string.h>
 #include <ap_int.h>
-#include <stdio.h>
 
 
 // directions codes
@@ -155,7 +154,7 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 	int directions_index = 0;
 
 	int similarity_matrix[DIRECTION_MATRIX_SIZE];
-//#pragma HLS ARRAY_PARTITION variable=similarity_matrix complete dim=1
+#pragma HLS ARRAY_PARTITION variable=similarity_matrix complete dim=1
 	init_sim_mat_for:for(int i = 0; i < N * (N+M-1); i++){
 		similarity_matrix[i] = 0;
 	}
@@ -174,19 +173,13 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 	// Find max val and index in similarity matrix and store in max_index[Row,Column,Value]
 	int max_val = 0;
 	int max_index = 0;
-	printf("\nSimilarity Matrix(hardware):\n");
+
 	find_max_sim_for:for(int i = 0; i< N*(N+M-1); i++){
 		if(similarity_matrix[i] > max_val) {
 			max_val = similarity_matrix[i];
 			max_index = i;
 		}
-		if(i % N == 0){
-			printf("\n");
-		}
-		printf("%d ",similarity_matrix[i]);
-
 	}
-	printf("\n");
 	max_index_value[0] = max_index / N;
 	max_index_value[1] = max_index % N;
 	max_index_value[2] = max_val;
