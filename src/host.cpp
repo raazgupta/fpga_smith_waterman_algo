@@ -12,8 +12,8 @@
 #include <CL/cl_ext.h>
 #include "xcl2.hpp"
 
-#define N 8
-#define M 16
+#define N 64
+#define M 128
 
 const short GAP_i = -5;
 const short GAP_d = -5;
@@ -341,11 +341,11 @@ int main(int argc, char** argv) {
 
 	fflush(stdout);
 
-	//fillRandom(query, N);
-	//fillRandom(database, M);
+	fillRandom(query, N);
+	fillRandom(database, M);
 
-	fillQuery(query);
-	fillDatabase(database);
+	//fillQuery(query);
+	//fillDatabase(database);
 
 	//fillRandom(databasehw, M+2*(N-1));
 
@@ -449,7 +449,7 @@ int main(int argc, char** argv) {
 
 		}
 		printf("\n\n");
-		printf("Max Index: %d\n", max_index_sw[0]);
+		//printf("Max Index: %d\n", max_index_sw[0]);
 		printf("Max Index [Row:Column]: [%d:%d]\n",max_index_sw[0]/N, max_index_sw[0]%N);
 		printf("Similarity Matrix value at Max Index: %d\n", matrix[max_index_sw[0]]);
 	//
@@ -457,12 +457,12 @@ int main(int argc, char** argv) {
 	// Hardware output
 	printf("\n");
 	printf("Hardware Output:\n");
-
+	/*
 	printf("databasehw (M+2*(N-1):");
 	for(int i = 0; i < M + 2 * (N -1); i ++)
 			printf("%c ", databasehw[i]);
 	printf("\n");
-
+	*/
 
 
 	int temp_index = 0;
@@ -477,7 +477,7 @@ int main(int argc, char** argv) {
 			iter++;
 		}
 	}
-
+	/*
 	printf("direction_matrixhw (N*(N+M-1):\n");
 		for(int i = 0; i < N*(N + M - 1); i++){
 			if ( i % N == 0)
@@ -485,10 +485,10 @@ int main(int argc, char** argv) {
 			printf(" %d ", tempMatrixBis[i]);
 		}
 		printf("\n\n");
-
+	*/
 	ordered_direction_matrix = order_matrix_blocks(tempMatrixBis, max_index_value);
 
-	printf("Before Ordering [Row/Column/Value]: %d/%d/%d\n\n",max_index_value[0],max_index_value[1],max_index_value[2]);
+	//printf("Before Ordering [Row/Column/Value]: %d/%d/%d\n\n",max_index_value[0],max_index_value[1],max_index_value[2]);
 
 	printf("ordered_direction_matrix (N*M):\n");
 

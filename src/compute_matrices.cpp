@@ -15,8 +15,8 @@ static const short MATCH = 1;
 static const short MISS_MATCH = -1;
 
 
-#define N 8
-#define M 16
+#define N 64
+#define M 128
 #define DATABASE_SIZE M + 2 * (N - 1)
 #define DIRECTION_MATRIX_SIZE (N + M - 1) * N
 #define LOOP_INDEX_SIZE (N+M-1) * 2
@@ -109,13 +109,14 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 #pragma HLS INTERFACE m_axi port=string2_g offset=slave bundle=gmem0
 #pragma HLS INTERFACE m_axi port=direction_matrix_g offset=slave bundle=gmem1
 #pragma HLS INTERFACE m_axi port=max_index_value offset=slave bundle=gmem2
+//#pragma HLS INTERFACE m_axi port=similarity_matrix offset=slave bundle=gmem0
 
 
 #pragma HLS INTERFACE s_axilite port=string1_g bundle=control
 #pragma HLS INTERFACE s_axilite port=string2_g bundle=control
 #pragma HLS INTERFACE s_axilite port=direction_matrix_g bundle=control
 #pragma HLS INTERFACE s_axilite port=max_index_value bundle=control
-
+//#pragma HLS INTERFACE s_axilite port=similarity_matrix bundle=control
 
 #pragma HLS INTERFACE s_axilite port=return bundle=control
 
@@ -153,11 +154,13 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 
 	int directions_index = 0;
 
+
 	int similarity_matrix[DIRECTION_MATRIX_SIZE];
-#pragma HLS ARRAY_PARTITION variable=similarity_matrix complete dim=1
+#pragma HLS ARRAY_PARTITION variable=similarity_matrix cyclic factor=64
 	init_sim_mat_for:for(int i = 0; i < N * (N+M-1); i++){
 		similarity_matrix[i] = 0;
 	}
+
 	int similarityDiagonal[N];
 #pragma HLS ARRAY_PARTITION variable=similarityDiagonal complete dim=1
 
@@ -171,6 +174,7 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 	}
 
 	// Find max val and index in similarity matrix and store in max_index[Row,Column,Value]
+
 	int max_val = 0;
 	int max_index = 0;
 
@@ -183,6 +187,7 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 	max_index_value[0] = max_index / N;
 	max_index_value[1] = max_index % N;
 	max_index_value[2] = max_val;
+
 
 //	memcpy(direction_matrix_g, direction_matrix, DIRECTION_MATRIX_SIZE * sizeof(short));
 
