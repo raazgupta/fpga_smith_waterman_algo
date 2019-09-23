@@ -12,8 +12,8 @@
 #include <CL/cl_ext.h>
 #include "xcl2.hpp"
 
-#define N 64
-#define M 128
+#define N 8
+#define M 1000
 
 const short GAP_i = -5;
 const short GAP_d = -5;
@@ -341,10 +341,10 @@ int main(int argc, char** argv) {
 
 	fflush(stdout);
 
-	fillRandom(query, N);
+	//fillRandom(query, N);
 	fillRandom(database, M);
 
-	//fillQuery(query);
+	fillQuery(query);
 	//fillDatabase(database);
 
 	//fillRandom(databasehw, M+2*(N-1));
@@ -520,6 +520,13 @@ int main(int argc, char** argv) {
 			return EXIT_FAILURE;
 		}
 	}
+
+	// Check Max Index Row and Column and Value
+	if(max_index_value[0] != max_index_sw[0]/N || max_index_value[1] != max_index_sw[0]%N || max_index_value[2] != matrix[max_index_sw[0]]){
+		printf("Error, Max Row,Columns,Value do not match: Software[%d,%d,%d], Hardware[%d,%d,%d]\n",max_index_sw[0]/N,max_index_sw[0]%N,matrix[max_index_sw[0]],max_index_value[0],max_index_value[1],max_index_value[2]);
+		return EXIT_FAILURE;
+	}
+
 
 	printf("computation ended!- RESULTS CORRECT \n");
 

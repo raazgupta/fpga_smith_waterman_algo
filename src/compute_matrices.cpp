@@ -15,11 +15,11 @@ static const short MATCH = 1;
 static const short MISS_MATCH = -1;
 
 
-#define N 64
-#define M 128
+#define N 8
+#define M 1000
 #define DATABASE_SIZE M + 2 * (N - 1)
 #define DIRECTION_MATRIX_SIZE (N + M - 1) * N
-#define LOOP_INDEX_SIZE (N+M-1) * 2
+#define SIMILARITY_MATRIX_SIZE (N+M-1) * 2
 #define MATRIX_SIZE N * M
 
 extern "C" {
@@ -28,9 +28,25 @@ void store_diagonal(int directions_index, ap_uint<512> *direction_matrix_g, ap_u
 
 	memcpy(direction_matrix_g + directions_index, compressed_diag, sizeof(ap_uint<512>));
 
-	store_sim_for: for(int i=0; i<N; i++){
+	int max_val = 0;
+	int max_index = 0;
+
+	find_simDiag_max_for: for(int i=0; i<N; i++){
+		if(similarityDiagonal[i]>max_val){
+			max_val = similarityDiagonal[i];
+			max_index = i;
+		}
+	}
+
+	//Store max_index and max_value in similarity_matrix
+	similarity_matrix[directions_index*2] = max_index;
+	similarity_matrix[directions_index*2+1] = max_val;
+
+	/*
+	store_in_simMat_for: for(int i=0; i<N; i++){
 		similarity_matrix[directions_index*N+i] = similarityDiagonal[i];
 	}
+	*/
 
 }
 
@@ -155,11 +171,13 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 	int directions_index = 0;
 
 
-	int similarity_matrix[DIRECTION_MATRIX_SIZE];
-#pragma HLS ARRAY_PARTITION variable=similarity_matrix cyclic factor=64
+	int similarity_matrix[SIMILARITY_MATRIX_SIZE];
+#pragma HLS ARRAY_PARTITION variable=similarity_matrix cyclic factor=2
+	/*
 	init_sim_mat_for:for(int i = 0; i < N * (N+M-1); i++){
 		similarity_matrix[i] = 0;
 	}
+	*/
 
 	int similarityDiagonal[N];
 #pragma HLS ARRAY_PARTITION variable=similarityDiagonal complete dim=1
@@ -176,8 +194,10 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 	// Find max val and index in similarity matrix and store in max_index[Row,Column,Value]
 
 	int max_val = 0;
-	int max_index = 0;
+	int max_row = 0;
+	int max_col = 0;
 
+	/*
 	find_max_sim_for:for(int i = 0; i< N*(N+M-1); i++){
 		if(similarity_matrix[i] > max_val) {
 			max_val = similarity_matrix[i];
@@ -187,7 +207,19 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 	max_index_value[0] = max_index / N;
 	max_index_value[1] = max_index % N;
 	max_index_value[2] = max_val;
+	*/
 
+	find_max_in_simMat_for:for(int i=0; i<(N+M-1); i++){
+		if(similarity_matrix[i*2+1] > max_val){
+			max_val = similarity_matrix[i*2+1];
+			max_col = similarity_matrix[i*2];
+			max_row = i;
+		}
+	}
+
+	max_index_value[0] = max_row;
+	max_index_value[1] = max_col;
+	max_index_value[2] = max_val;
 
 //	memcpy(direction_matrix_g, direction_matrix, DIRECTION_MATRIX_SIZE * sizeof(short));
 
