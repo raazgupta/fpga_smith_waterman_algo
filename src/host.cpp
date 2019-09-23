@@ -13,7 +13,7 @@
 #include "xcl2.hpp"
 
 #define N 8
-#define M 1000
+#define M 16
 
 const short GAP_i = -5;
 const short GAP_d = -5;
@@ -342,10 +342,10 @@ int main(int argc, char** argv) {
 	fflush(stdout);
 
 	//fillRandom(query, N);
-	fillRandom(database, M);
+	//fillRandom(database, M);
 
 	fillQuery(query);
-	//fillDatabase(database);
+	fillDatabase(database);
 
 	//fillRandom(databasehw, M+2*(N-1));
 
@@ -530,6 +530,45 @@ int main(int argc, char** argv) {
 
 	printf("computation ended!- RESULTS CORRECT \n");
 
+	//Printing best match between query and database
+	char *reverse_match_query = (char*) malloc(sizeof(char) * (N+1));
+	char *reverse_match_database = (char*) malloc(sizeof(char) * (N+1));
+	int num_char = 0;
+	int dirMat_index = max_index_value[0]*N + max_index_value[1];
+
+	while(ordered_direction_matrix[dirMat_index] != CENTER){
+
+		reverse_match_query[num_char] = query[dirMat_index % N];
+		reverse_match_database[num_char] = database[dirMat_index / N];
+
+		int direction = ordered_direction_matrix[dirMat_index];
+		switch(direction){
+		case NORTH:
+			dirMat_index = dirMat_index - N;
+			break;
+		case NORTH_WEST:
+			dirMat_index = dirMat_index - (N+1);
+			break;
+		case WEST:
+			dirMat_index = dirMat_index - 1;
+			break;
+		default:
+			printf("invalid direction found in ordered_direction_matrix\n");
+		}
+		num_char++;
+	}
+
+	printf("Best Match:\n");
+	printf("Query: \n");
+	for(int i=num_char-1; i>=0; i--){
+		printf("%c",reverse_match_query[i]);
+	}
+	printf("\n");
+	printf("Database: \n");
+	for(int i=num_char-1; i>=0; i--){
+		printf("%c",reverse_match_database[i]);
+	}
+	printf("\n");
 
 
 	free(matrix);

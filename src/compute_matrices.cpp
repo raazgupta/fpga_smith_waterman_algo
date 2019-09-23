@@ -16,7 +16,7 @@ static const short MISS_MATCH = -1;
 
 
 #define N 8
-#define M 1000
+#define M 16
 #define DATABASE_SIZE M + 2 * (N - 1)
 #define DIRECTION_MATRIX_SIZE (N + M - 1) * N
 #define SIMILARITY_MATRIX_SIZE (N+M-1) * 2
