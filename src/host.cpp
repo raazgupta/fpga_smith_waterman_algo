@@ -12,12 +12,12 @@
 #include <CL/cl_ext.h>
 #include "xcl2.hpp"
 
-#define N 8
-#define M 16
+#define N 64
+#define M 128
 
-const short GAP_i = -5;
-const short GAP_d = -5;
-const short MATCH = 1;
+const short GAP_i = -1;
+const short GAP_d = -1;
+const short MATCH = 2;
 const short MISS_MATCH = -1;
 const short CENTER = 0;
 const short NORTH = 1;
@@ -341,11 +341,11 @@ int main(int argc, char** argv) {
 
 	fflush(stdout);
 
-	//fillRandom(query, N);
-	//fillRandom(database, M);
+	fillRandom(query, N);
+	fillRandom(database, M);
 
-	fillQuery(query);
-	fillDatabase(database);
+	//fillQuery(query);
+	//fillDatabase(database);
 
 	//fillRandom(databasehw, M+2*(N-1));
 
@@ -407,7 +407,10 @@ int main(int argc, char** argv) {
 
 	    // Copy Result from Device Global Memory to Host Local Memory
 	    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({output_direction_matrixhw, output_max_index_value},CL_MIGRATE_MEM_OBJECT_HOST));
-	    q.finish();
+
+	    //q.finish();
+	    OCL_CHECK(err, err = q.finish());
+
 	// OPENCL HOST CODE AREA END
 
 	// Software calculation
@@ -533,49 +536,79 @@ int main(int argc, char** argv) {
 	//Printing best match between query and database
 	char *reverse_match_query = (char*) malloc(sizeof(char) * (N+1));
 	char *reverse_match_database = (char*) malloc(sizeof(char) * (N+1));
-	int num_char = 0;
+	int num_char_query = 0;
+	int add_query = 1;
+	int num_char_database = 0;
+	int add_database = 1;
 	int dirMat_index = max_index_value[0]*N + max_index_value[1];
 
-	while(ordered_direction_matrix[dirMat_index] != CENTER){
+	while(dirMat_index >=0 && ordered_direction_matrix[dirMat_index] != CENTER){
 
-		reverse_match_query[num_char] = query[dirMat_index % N];
-		reverse_match_database[num_char] = database[dirMat_index / N];
+		if(add_query == 1){
+			reverse_match_query[num_char_query] = query[dirMat_index % N];
+			num_char_query++;
+		}
+		if(add_database == 1){
+			reverse_match_database[num_char_database] = database[dirMat_index / N];
+			num_char_database++;
+		}
+
+		//if dirMat_index is at first column of 2D array then exit the while loop
+		if(dirMat_index % N == 0){
+			break;
+		}
 
 		int direction = ordered_direction_matrix[dirMat_index];
+
 		switch(direction){
 		case NORTH:
+			add_query = 0;
+			add_database = 1;
 			dirMat_index = dirMat_index - N;
 			break;
 		case NORTH_WEST:
+			add_query = 1;
+			add_database = 1;
 			dirMat_index = dirMat_index - (N+1);
 			break;
 		case WEST:
+			add_query = 1;
+			add_database = 0;
 			dirMat_index = dirMat_index - 1;
 			break;
 		default:
 			printf("invalid direction found in ordered_direction_matrix\n");
 		}
-		num_char++;
+
 	}
 
 	printf("Best Match:\n");
 	printf("Query: \n");
-	for(int i=num_char-1; i>=0; i--){
+	for(int i=num_char_query-1; i>=0; i--){
 		printf("%c",reverse_match_query[i]);
 	}
 	printf("\n");
 	printf("Database: \n");
-	for(int i=num_char-1; i>=0; i--){
+	for(int i=num_char_database-1; i>=0; i--){
 		printf("%c",reverse_match_database[i]);
 	}
-	printf("\n");
+	printf("\n\n");
 
 
-	free(matrix);
-	free(directionMatrixSW);
-	free(databasehw);
-//	free(max_index_sw);
-	free(ordered_direction_matrix);
+	//free(query);
+	//free(database);
+	//free(databasehw);
+	//free(direction_matrixhw);
+	//free(max_index_value);
+
+	//free(matrix);
+	//free(directionMatrixSW);
+	//free(max_index_sw);
+	//free(ordered_direction_matrix);
+	//free(tempMatrixBis);
+	//free(reverse_match_query);
+	//free(reverse_match_database);
+
 
 	return EXIT_SUCCESS;
 }
