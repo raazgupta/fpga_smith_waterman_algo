@@ -26,6 +26,21 @@ const short WEST = 3;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+
+void set_char_main(unsigned int  * array, int index, unsigned char val){
+	switch(val){
+		case 'A' : array[index / 16] |= (0 << ((index % 16) * 2));
+		break;
+		case 'C' : array[index / 16] |= (1 << ((index % 16) * 2));
+		break;
+		case 'G' : array[index / 16] |= (3 << ((index % 16) * 2));
+		break;
+		case 'T' : array[index / 16] |= (2 << ((index % 16) * 2));
+		break;
+	}
+
+}
+
 void fillQuery(char *query) {
     //query = '-CATTCAC';
     strcpy(query,"ACTGCCTG");
@@ -327,7 +342,7 @@ int main(int argc, char** argv) {
 
 	char *query = (char*) malloc(sizeof(char) * N);
 	char *database = (char*) malloc(sizeof(char) * M);
-	char *databasehw = (char*) malloc(sizeof(char) * (M + 2 *(N-1)));
+	char *databasehw = (char*) malloc(sizeof(char) * (M + 2 *(N)));
 //	int *similarity_matrix = (int*) malloc(sizeof(int) * N * M);
 	char *direction_matrixhw = (char*) malloc(sizeof(char) * 256 * (N + M - 1)); //512 bits..
 //	int *max_index = (int *) malloc(sizeof(int));
@@ -336,6 +351,11 @@ int main(int argc, char** argv) {
 	max_index_value[0] = 0;
 	max_index_value[1] = 0;
 	max_index_value[2] = 0;
+
+	unsigned int *query_param = (unsigned int*)malloc(sizeof(unsigned int) * (N/16+1));
+	unsigned int *database_param = (unsigned int*)malloc(sizeof(unsigned int) * ((M+2*N)/16+1));
+	for(int i = 0; i < N/16 + 1; i++) query_param[i] = 0;
+	for(int i = 0; i < (M + 2*(N))/16 + 1; i++) database_param[i] = 0;
 
 	printf("array defined! \n");
 
@@ -349,7 +369,7 @@ int main(int argc, char** argv) {
 
 	//fillRandom(databasehw, M+2*(N-1));
 
-	for(int i = 0; i < (M+2*(N-1)) ; i ++)
+	for(int i = 0; i < (M+2*(N)) ; i ++)
 		databasehw[i] = 'P';
 
 	memcpy((databasehw + N - 1), database, M);
@@ -357,7 +377,12 @@ int main(int argc, char** argv) {
 //	memset(similarity_matrix, 0, sizeof(int) * N * M);
 	memset(direction_matrixhw, 0, sizeof(char) * 256 * (N + M - 1));
 
-
+	for(int i=0; i<N; i++){
+		set_char_main(query_param, i, query[i]);
+	}
+	for(int i=0; i< M+2*N; i++){
+		set_char_main(database_param, i, databasehw[i]);
+	}
 
 	// OPENCL HOST CODE AREA START
 	    // get_xil_devices() is a utility API which will find the xilinx
@@ -384,9 +409,9 @@ int main(int argc, char** argv) {
 	    // Buffers are allocated using CL_MEM_USE_HOST_PTR for efficient memory and
 	    // Device-to-host communication
 	    OCL_CHECK(err, cl::Buffer input_query   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-	    		sizeof(char) * N, query, &err));
+	    		sizeof(unsigned int) * (N/16+1), query_param, &err));
 	    OCL_CHECK(err, cl::Buffer input_database   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-	    		sizeof(char) * (M + 2 * (N - 1)), databasehw, &err));
+	    		sizeof(unsigned int) * ((M + 2 * N)/16 + 1), database_param, &err));
 	    OCL_CHECK(err, cl::Buffer output_direction_matrixhw (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
 	    		sizeof(char) * 256 * (N + M - 1), direction_matrixhw, &err));
 	    OCL_CHECK(err, cl::Buffer output_max_index_value (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,

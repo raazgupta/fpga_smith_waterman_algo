@@ -17,6 +17,7 @@ static const short MISS_MATCH = -1;
 
 #define N 64
 #define M 128
+#define NUM_ELEM 256
 #define DATABASE_SIZE M + 2 * (N - 1)
 #define DIRECTION_MATRIX_SIZE (N + M - 1) * N
 #define SIMILARITY_MATRIX_SIZE (N+M-1) * 2
@@ -52,7 +53,7 @@ void store_diagonal(int directions_index, ap_uint<512> *direction_matrix_g, ap_u
 
 
 
-void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABASE_SIZE], int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[1], int similarityDiagonal[N]){
+void calculate_diagonal(int num_diagonals, ap_uint<512> string1[N/NUM_ELEM+1], ap_uint<512>  string2[DATABASE_SIZE/NUM_ELEM+1], int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[1], int similarityDiagonal[N]){
 
 	int databaseLocalIndex = num_diagonals;
 	int from, to;
@@ -65,8 +66,10 @@ void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABAS
 	calculate_diagonal_for: for(int index = N - 1; index >= 0; index --){
 		int val = 0;
 
-		unsigned int q = string1[index];
-		unsigned int db = string2[databaseLocalIndex];
+		const short q = string1[index/NUM_ELEM].range((index%NUM_ELEM)*2+1, (index%NUM_ELEM)*2);
+		short db = string2[databaseLocalIndex/NUM_ELEM].range((databaseLocalIndex%NUM_ELEM)*2+1, (databaseLocalIndex%NUM_ELEM)*2);
+
+		if(databaseLocalIndex < N-1) db = 9;
 
 //		if(num_diagonals < N - 1 && databaseLocalIndex < N - 1 - num_diagonals) db = 9;
 
@@ -119,7 +122,7 @@ void calculate_diagonal(int num_diagonals, char string1[N], char string2[DATABAS
 
 
 
-void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction_matrix_g, int *max_index_value)
+void compute_matrices(ap_uint<512> *string1_g, ap_uint<512> *string2_g, ap_uint<512> *direction_matrix_g, int *max_index_value)
 {
 #pragma HLS INTERFACE m_axi port=string1_g offset=slave bundle=gmem0
 #pragma HLS INTERFACE m_axi port=string2_g offset=slave bundle=gmem0
@@ -136,16 +139,16 @@ void compute_matrices( char *string1_g, char *string2_g, ap_uint<512> *direction
 
 #pragma HLS INTERFACE s_axilite port=return bundle=control
 
-	char string1[N];
+	ap_uint<512> string1[N/NUM_ELEM + 1];
 #pragma HLS ARRAY_PARTITION variable=string1 complete dim=1
-	char string2[DATABASE_SIZE];
+	ap_uint<512> string2[DATABASE_SIZE/NUM_ELEM + 1];
 #pragma HLS ARRAY_PARTITION variable=string2 complete dim=1
 
 //	short direction_matrix[DIRECTION_MATRIX_SIZE];
 //#pragma HLS ARRAY_PARTITION variable=direction_matrix complete dim=1
 
-	memcpy(string1, string1_g, N*sizeof(char));
-	memcpy(string2, string2_g, DATABASE_SIZE * sizeof(char));
+	memcpy(string1, string1_g, (N/NUM_ELEM+1) * 64);
+	memcpy(string2, string2_g, (DATABASE_SIZE/NUM_ELEM+1) * 64);
 
 	int north[N+1];
 #pragma HLS ARRAY_PARTITION variable=north complete dim=1
