@@ -25,6 +25,15 @@ static const short MISS_MATCH = -1;
 
 extern "C" {
 
+void update_database(ap_uint<512> *string2, ap_uint<512> *shift_db, int num_diagonals){
+	int startingIndex = N + num_diagonals;
+	update_database:for(int i=1; i<N; i++){
+#pragma HLS PIPELINE
+		shift_db[(i-1)/NUM_ELEM].range(((i-1)%NUM_ELEM)*2+1, ((i-1)%NUM_ELEM)*2) = shift_db[i/NUM_ELEM].range((i%NUM_ELEM)*2+1, (i%NUM_ELEM)*2);
+	}
+	shift_db[(N-1)/NUM_ELEM].range(((N-1)%NUM_ELEM) * 2 + 1,((N-1)%NUM_ELEM) * 2) = string2[startingIndex/NUM_ELEM].range((startingIndex%NUM_ELEM) * 2 +1, (startingIndex%NUM_ELEM) *2);
+}
+
 void store_diagonal(int directions_index, ap_uint<512> *direction_matrix_g, ap_uint<512> compressed_diag[1], int *similarity_matrix, int *similarityDiagonal) {
 
 	memcpy(direction_matrix_g + directions_index, compressed_diag, sizeof(ap_uint<512>));
@@ -53,9 +62,9 @@ void store_diagonal(int directions_index, ap_uint<512> *direction_matrix_g, ap_u
 
 
 
-void calculate_diagonal(int num_diagonals, ap_uint<512> string1[N/NUM_ELEM+1], ap_uint<512>  string2[DATABASE_SIZE/NUM_ELEM+1], int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[1], int similarityDiagonal[N]){
+void calculate_diagonal(int num_diagonals, ap_uint<512> string1[N/NUM_ELEM+1], int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[1], int similarityDiagonal[N], ap_uint<512> *shift_db){
 
-	int databaseLocalIndex = num_diagonals;
+	int databaseLocalIndex = 0;
 	int from, to;
 	from = N * 2 - 2;
 	to = N * 2 - 1;
@@ -67,7 +76,7 @@ void calculate_diagonal(int num_diagonals, ap_uint<512> string1[N/NUM_ELEM+1], a
 		int val = 0;
 
 		const short q = string1[index/NUM_ELEM].range((index%NUM_ELEM)*2+1, (index%NUM_ELEM)*2);
-		short db = string2[databaseLocalIndex/NUM_ELEM].range((databaseLocalIndex%NUM_ELEM)*2+1, (databaseLocalIndex%NUM_ELEM)*2);
+		short db = shift_db[databaseLocalIndex/NUM_ELEM].range((databaseLocalIndex%NUM_ELEM)*2+1, (databaseLocalIndex%NUM_ELEM)*2);
 
 		if(databaseLocalIndex < N-1) db = 9;
 
@@ -140,9 +149,8 @@ void compute_matrices(ap_uint<512> *string1_g, ap_uint<512> *string2_g, ap_uint<
 #pragma HLS INTERFACE s_axilite port=return bundle=control
 
 	ap_uint<512> string1[N/NUM_ELEM + 1];
-#pragma HLS ARRAY_PARTITION variable=string1 complete dim=1
 	ap_uint<512> string2[DATABASE_SIZE/NUM_ELEM + 1];
-#pragma HLS ARRAY_PARTITION variable=string2 complete dim=1
+
 
 //	short direction_matrix[DIRECTION_MATRIX_SIZE];
 //#pragma HLS ARRAY_PARTITION variable=direction_matrix complete dim=1
@@ -164,11 +172,17 @@ void compute_matrices(ap_uint<512> *string1_g, ap_uint<512> *string2_g, ap_uint<
 */
 
 	ap_uint<512> compressed_diag[1];
+	ap_uint<512> shift_db[N/NUM_ELEM];
 
 	init_dep_for:for(int i = 0; i <= N; i++){
 		north[i] = 0;
 		west[i] = 0;
 		northwest[i] = 0;
+	}
+
+	init_db:for(int i = 0; i < N/NUM_ELEM; i++){
+	#pragma HLS PIPELINE
+			shift_db[i] = string2[i];
 	}
 
 	int directions_index = 0;
@@ -189,8 +203,9 @@ void compute_matrices(ap_uint<512> *string1_g, ap_uint<512> *string2_g, ap_uint<
 #pragma HLS inline region recursive
 #pragma HLS PIPELINE
 
-		calculate_diagonal(num_diagonals, string1, string2, northwest, north, west, directions_index, compressed_diag, similarityDiagonal);
+		calculate_diagonal(num_diagonals, string1, northwest, north, west, directions_index, compressed_diag, similarityDiagonal, shift_db);
 		store_diagonal(directions_index,  direction_matrix_g, compressed_diag, similarity_matrix, similarityDiagonal);
+		update_database(string2, shift_db, num_diagonals);
 		directions_index ++;
 	}
 
