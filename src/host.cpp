@@ -12,8 +12,8 @@
 #include <CL/cl_ext.h>
 #include "xcl2.hpp"
 
-#define N 64
-#define M 128
+#define N 256
+#define M 256
 
 const short GAP_i = -1;
 const short GAP_d = -1;
@@ -25,7 +25,6 @@ const short NORTH_WEST = 2;
 const short WEST = 3;
 
 ////////////////////////////////////////////////////////////////////////////////
-
 
 void set_char_main(unsigned int  * array, int index, unsigned char val){
 	switch(val){
@@ -39,18 +38,6 @@ void set_char_main(unsigned int  * array, int index, unsigned char val){
 		break;
 	}
 
-}
-
-void fillQuery(char *query) {
-    //query = '-CATTCAC';
-    strcpy(query,"ACTGCCTG");
-    //strcpy(query, "-CTCGCAGC");
-}
-
-void fillDatabase(char *database) {
-	//database = '-CTCGCAGC';
-	strcpy(database, "ACTGACTGACTGACTG");
-	//strcpy(database,"-CTCGCAG");
 }
 
 short get(char data[], int key) {
@@ -70,7 +57,7 @@ short get(char data[], int key) {
 			}
 
 
-unsigned short* order_matrix_blocks(unsigned short* in_matrix, int* max_index_value){
+unsigned short* order_matrix_blocks(unsigned short* in_matrix){
 	unsigned short * out_matrix = (unsigned short*)malloc(sizeof(unsigned short) * N * M);
 
 	int num_diag = 0;
@@ -80,8 +67,6 @@ unsigned short* order_matrix_blocks(unsigned short* in_matrix, int* max_index_va
 	int tmp_j = 0;
 	int i = 0;
 	int j;
-
-	int max_index = max_index_value[0]*N + max_index_value[1];
 
 	for(i = 0; i<(M + N - 1) * N;){
 	//while(store_elem != 0){
@@ -96,12 +81,6 @@ unsigned short* order_matrix_blocks(unsigned short* in_matrix, int* max_index_va
 		for(j = 0; j < store_elem; j++){
 			store_index = tmp_j * N + tmp_i;
 			out_matrix[store_index] = in_matrix[i];
-
-			if(max_index == i){
-				max_index_value[0] = store_index / N;
-				max_index_value[1] = store_index % N;
-			}
-
 			//printf("stored %d in index %d \n", out_matrix[store_index], store_index);
 			tmp_j--;
 			tmp_i++;
@@ -121,6 +100,85 @@ unsigned short* order_matrix_blocks(unsigned short* in_matrix, int* max_index_va
 
 
 	return out_matrix;
+}
+
+void compute_matrices_sw_3(char *a, char *database,
+		int *matrix, short * directionMatrixSW){
+
+	//TestBench
+    int north = 0;
+      int west = 0;
+      int northwest = 0;
+
+
+      int maxValue = 0;
+      int localMaxIndex = 0;
+
+      int val = 0;
+      short dir = 0;
+      int maxIndexSw = 0;
+
+
+  //calculate my own SW
+  for(int i = 0; i < N * M; i++){
+    val = 0;
+    dir=CENTER;
+    if( i == 0){
+      north = 0;
+      northwest = 0;
+      west = 0;
+    }else if (i / N == 0){ //first row
+      north = 0;
+      northwest = 0;
+      west = matrix[i - 1];
+    }else if(i % N == 0){ // first col
+      west = 0;
+      northwest = 0;
+      north = matrix[i - N];
+    }else{
+      west = matrix[i - 1];
+      north = matrix[i - N];
+      northwest = matrix [i - N - 1];
+    }
+
+
+    //all set, compute
+    int jj = i / N;
+    int ii = i % N;
+
+    const short match = (a[ii] == database[jj]) ?  MATCH : MISS_MATCH;
+    int val1 = northwest + match;
+    /*
+    if(i == 1002) {
+      printf("west %d, north %d, northwest %d - query %c, database %c, val1 %d , match %d\n", west, north, northwest, query[ii], database[jj], val1, match);
+      printf("ii %d, jj %d \n", ii, jj);
+    }
+    */
+
+    if (val1 > val) {
+      val = val1;
+        dir = NORTH_WEST;
+    }
+    val1 = north + GAP_d;
+    if (val1 > val) {
+        val = val1;
+        dir = NORTH;
+    }
+    val1 = west + GAP_i;
+    if (val1 > val) {
+      val = val1;
+        dir = WEST;
+    }
+    //printf("val %d \n", val);
+    matrix[i] = val;
+    directionMatrixSW[i] = dir;
+
+    if(val > maxValue){
+      maxValue = val;
+      maxIndexSw = i;
+    }
+
+  }
 }
 
 void compute_matrices_sw_2(char *query, char *database,
@@ -193,8 +251,6 @@ void compute_matrices_sw_2(char *query, char *database,
 	    }
 
 	  }
-
-	  max_index[0] = maxIndexSw;
 }
 
 
@@ -342,34 +398,53 @@ int main(int argc, char** argv) {
 
 	char *query = (char*) malloc(sizeof(char) * N);
 	char *database = (char*) malloc(sizeof(char) * M);
-	char *databasehw = (char*) malloc(sizeof(char) * (M + 2 *(N)));
+	char *databasehw = (char*) malloc(sizeof(char) * (M + 2 *N));
 //	int *similarity_matrix = (int*) malloc(sizeof(int) * N * M);
 	char *direction_matrixhw = (char*) malloc(sizeof(char) * 256 * (N + M - 1)); //512 bits..
 //	int *max_index = (int *) malloc(sizeof(int));
-	int *max_index_value = (int*) malloc(sizeof(int) * 3);
 
-	max_index_value[0] = 0;
-	max_index_value[1] = 0;
-	max_index_value[2] = 0;
-
-	unsigned int *query_param = (unsigned int*)malloc(sizeof(unsigned int) * (N/16+1));
-	unsigned int *database_param = (unsigned int*)malloc(sizeof(unsigned int) * ((M+2*N)/16+1));
-	for(int i = 0; i < N/16 + 1; i++) query_param[i] = 0;
-	for(int i = 0; i < (M + 2*(N))/16 + 1; i++) database_param[i] = 0;
+	unsigned int * query_param = (unsigned int *)malloc(sizeof(unsigned int) * (N/16 + 1));
+	unsigned int * database_param = (unsigned int *)malloc(sizeof(unsigned int) * ((M + 2*(N))/16 + 1));
 
 	printf("array defined! \n");
 
 	fflush(stdout);
 
+	size_t global[2];                  // global domain size for our calculation
+	size_t local[2];                    // local domain size for our calculation
+
+	/*
+	cl_platform_id platform_id;         // platform id
+	cl_device_id device_id;             // compute device id
+	cl_context context;                 // compute context
+	cl_command_queue commands;          // compute command queue
+	cl_program program;                 // compute program
+	cl_kernel kernel;                   // compute kernel
+
+	char cl_platform_vendor[1001];
+	char cl_platform_name[1001];
+
+	cl_mem input_query;
+	cl_mem input_database;
+//	cl_mem output_similarity_matrix;
+	cl_mem output_direction_matrixhw;
+//	cl_mem output_max_index;
+*/
+	if (argc != 2) {
+		printf("%s <inputfile>\n", argv[0]);
+		return EXIT_FAILURE;
+	}
+
+	for(int i = 0; i < N/16 + 1; i++) query_param[i] = 0;
+	for(int i = 0; i < (M + 2*(N))/16 + 1; i++) database_param[i] = 0;
+
 	fillRandom(query, N);
 	fillRandom(database, M);
+	fillRandom(databasehw, M+2*(N-1));
 
-	//fillQuery(query);
-	//fillDatabase(database);
 
-	//fillRandom(databasehw, M+2*(N-1));
 
-	for(int i = 0; i < (M+2*(N)) ; i ++)
+	for(int i = 0; i < N - 1 ; i ++)
 		databasehw[i] = 'P';
 
 	memcpy((databasehw + N - 1), database, M);
@@ -377,68 +452,336 @@ int main(int argc, char** argv) {
 //	memset(similarity_matrix, 0, sizeof(int) * N * M);
 	memset(direction_matrixhw, 0, sizeof(char) * 256 * (N + M - 1));
 
-	for(int i=0; i<N; i++){
+	printf("query \n");
+	for(int i = 0; i < N; i++){
+		printf("%c", query[i]);
 		set_char_main(query_param, i, query[i]);
 	}
-	for(int i=0; i< M+2*N; i++){
+
+	printf("\ndatabase \n");
+	for(int i = 0; i < M + 2*(N); i++){
+		printf("%c", databasehw[i]);
 		set_char_main(database_param, i, databasehw[i]);
+//		printf(" = %d, ", (database_param[i/16] >> ((i%16) * 2)) & 3);
 	}
 
 	// OPENCL HOST CODE AREA START
-	    // get_xil_devices() is a utility API which will find the xilinx
-	    // platforms and will return list of devices connected to Xilinx platform
-	    std::vector<cl::Device> devices = xcl::get_xil_devices();
-	    cl::Device device = devices[0];
+	// get_xil_devices() is a utility API which will find the xilinx
+	// platforms and will return list of devices connected to Xilinx platform
+	std::vector<cl::Device> devices = xcl::get_xil_devices();
+	cl::Device device = devices[0];
 
-	    OCL_CHECK(err, cl::Context context(device, NULL, NULL, NULL, &err));
-	    OCL_CHECK(err, cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
-	    OCL_CHECK(err, std::string device_name = device.getInfo<CL_DEVICE_NAME>(&err));
+	OCL_CHECK(err, cl::Context context(device, NULL, NULL, NULL, &err));
+	OCL_CHECK(err, cl::CommandQueue q(context, device, CL_QUEUE_PROFILING_ENABLE, &err));
+	OCL_CHECK(err, std::string device_name = device.getInfo<CL_DEVICE_NAME>(&err));
 
-	    // find_binary_file() is a utility API which will search the xclbin file for
-	    // targeted mode (sw_emu/hw_emu/hw) and for targeted platforms.
-	    std::string binaryFile = xcl::find_binary_file(device_name,"compute_matrices");
+	// find_binary_file() is a utility API which will search the xclbin file for
+	// targeted mode (sw_emu/hw_emu/hw) and for targeted platforms.
+	std::string binaryFile = xcl::find_binary_file(device_name,"compute_matrices");
 
-	    // import_binary_file() ia a utility API which will load the binaryFile
-	    // and will return Binaries.
-	    cl::Program::Binaries bins = xcl::import_binary_file(binaryFile);
-	    devices.resize(1);
-	    OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
-	    OCL_CHECK(err, cl::Kernel krnl_compute_matrices(program,"compute_matrices", &err));
+	// import_binary_file() ia a utility API which will load the binaryFile
+	// and will return Binaries.
+	cl::Program::Binaries bins = xcl::import_binary_file(binaryFile);
+	devices.resize(1);
+	OCL_CHECK(err, cl::Program program(context, devices, bins, NULL, &err));
+	OCL_CHECK(err, cl::Kernel krnl_compute_matrices(program,"compute_matrices", &err));
 
-	    // Allocate Buffer in Global Memory
-	    // Buffers are allocated using CL_MEM_USE_HOST_PTR for efficient memory and
-	    // Device-to-host communication
-	    OCL_CHECK(err, cl::Buffer input_query   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-	    		sizeof(unsigned int) * (N/16+1), query_param, &err));
-	    OCL_CHECK(err, cl::Buffer input_database   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
-	    		sizeof(unsigned int) * ((M + 2 * N)/16 + 1), database_param, &err));
-	    OCL_CHECK(err, cl::Buffer output_direction_matrixhw (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-	    		sizeof(char) * 256 * (N + M - 1), direction_matrixhw, &err));
-	    OCL_CHECK(err, cl::Buffer output_max_index_value (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-	    	    		sizeof(int) * 3, max_index_value, &err));
+	// Allocate Buffer in Global Memory
+	// Buffers are allocated using CL_MEM_USE_HOST_PTR for efficient memory and
+	// Device-to-host communication
+	OCL_CHECK(err, cl::Buffer input_query   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+			sizeof(unsigned int) * (N/16+1), query_param, &err));
+	OCL_CHECK(err, cl::Buffer input_database   (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_ONLY,
+			sizeof(unsigned int) * ((M + 2*(N))/16 + 1), database_param, &err));
+	OCL_CHECK(err, cl::Buffer output_direction_matrixhw (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+			sizeof(char) * 256 * (N + M - 1), direction_matrixhw, &err));
+	//OCL_CHECK(err, cl::Buffer output_max_index_value (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+	//				sizeof(int) * 3, max_index_value, &err));
 
-	    // Copy input data to device global memory
-	    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({input_query, input_database, output_direction_matrixhw, output_max_index_value},0/* 0 means from host*/));
+	// Copy input data to device global memory
+	OCL_CHECK(err, err = q.enqueueMigrateMemObjects({input_query, input_database, output_direction_matrixhw},0/* 0 means from host*/));
 
-	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(0, input_query));
-	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(1, input_database));
-	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(2, output_direction_matrixhw));
-	    OCL_CHECK(err, err = krnl_compute_matrices.setArg(3, output_max_index_value));
+	OCL_CHECK(err, err = krnl_compute_matrices.setArg(0, input_query));
+	OCL_CHECK(err, err = krnl_compute_matrices.setArg(1, input_database));
+	OCL_CHECK(err, err = krnl_compute_matrices.setArg(2, output_direction_matrixhw));
+	//OCL_CHECK(err, err = krnl_compute_matrices.setArg(3, output_max_index_value));
 
-	    // Launch the Kernel
-	    // For HLS kernels global and local size is always (1,1,1). So, it is recommended
-	    // to always use enqueueTask() for invoking HLS kernel
-	    OCL_CHECK(err, err = q.enqueueTask(krnl_compute_matrices));
+	// Launch the Kernel
+	// For HLS kernels global and local size is always (1,1,1). So, it is recommended
+	// to always use enqueueTask() for invoking HLS kernel
+	OCL_CHECK(err, err = q.enqueueTask(krnl_compute_matrices));
 
-	    // Copy Result from Device Global Memory to Host Local Memory
-	    OCL_CHECK(err, err = q.enqueueMigrateMemObjects({output_direction_matrixhw, output_max_index_value},CL_MIGRATE_MEM_OBJECT_HOST));
+	// Copy Result from Device Global Memory to Host Local Memory
+	OCL_CHECK(err, err = q.enqueueMigrateMemObjects({output_direction_matrixhw},CL_MIGRATE_MEM_OBJECT_HOST));
 
-	    //q.finish();
-	    OCL_CHECK(err, err = q.finish());
+	//q.finish();
+	OCL_CHECK(err, err = q.finish());
 
-	// OPENCL HOST CODE AREA END
+// OPENCL HOST CODE AREA END
 
-	// Software calculation
+	/*
+	// Connect to first platform
+	//
+	printf("GET platform \n");
+	err = clGetPlatformIDs(1, &platform_id, NULL);
+	if (err != CL_SUCCESS) {
+		printf("Error: Failed to find an OpenCL platform!\n");
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+	printf("GET platform vendor \n");
+	err = clGetPlatformInfo(platform_id, CL_PLATFORM_VENDOR, 1000,
+			(void *) cl_platform_vendor, NULL);
+	if (err != CL_SUCCESS) {
+		printf("Error: clGetPlatformInfo(CL_PLATFORM_VENDOR) failed!\n");
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+	printf("CL_PLATFORM_VENDOR %s\n", cl_platform_vendor);
+	printf("GET platform name \n");
+	err = clGetPlatformInfo(platform_id, CL_PLATFORM_NAME, 1000,
+			(void *) cl_platform_name, NULL);
+	if (err != CL_SUCCESS) {
+		printf("Error: clGetPlatformInfo(CL_PLATFORM_NAME) failed!\n");
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+	printf("CL_PLATFORM_NAME %s\n", cl_platform_name);
+
+	// Connect to a compute device
+	//
+	int fpga = 1;
+
+	printf("get device FPGA is %d  \n", fpga);
+	err = clGetDeviceIDs(platform_id,
+			fpga ? CL_DEVICE_TYPE_ACCELERATOR : CL_DEVICE_TYPE_CPU, 1,
+			&device_id, NULL);
+	if (err != CL_SUCCESS) {
+		printf("Error: Failed to create a device group!\n");
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// Create a compute context
+	//
+	printf("create context \n");
+	context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
+	if (!context) {
+		printf("Error: Failed to create a compute context!\n");
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// Create a command commands
+	//
+	printf("create queue \n");
+	commands = clCreateCommandQueue(context, device_id,
+	CL_QUEUE_PROFILING_ENABLE, &err);
+	if (!commands) {
+		printf("Error: Failed to create a command commands!\n");
+		printf("Error: code %i\n", err);
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+	int status;
+
+	// Create Program Objects
+	//
+
+	// Load binary from disk
+	unsigned char *kernelbinary;
+	char *xclbin = argv[1];
+	printf("loading %s\n", xclbin);
+	int n_i = load_file_to_memory(xclbin, (char **) &kernelbinary);
+	if (n_i < 0) {
+		printf("failed to load kernel from xclbin: %s\n", xclbin);
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+	size_t n = n_i;
+	// Create the compute program from offline
+	printf("create program with binary \n");
+	program = clCreateProgramWithBinary(context, 1, &device_id, &n,
+			(const unsigned char **) &kernelbinary, &status, &err);
+	if ((!program) || (err != CL_SUCCESS)) {
+		printf("Error: Failed to create compute program from binary %d!\n",
+				err);
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// Build the program executable
+	//
+	printf("build program \n");
+	err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
+	if (err != CL_SUCCESS) {
+		size_t len;
+		char buffer[2048];
+
+		printf("Error: Failed to build program executable!\n");
+		clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG,
+				sizeof(buffer), buffer, &len);
+		printf("%s\n", buffer);
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// Create the compute kernel in the program we wish to run
+	//
+	printf("create kernel \n");
+	kernel = clCreateKernel(program, "compute_matrices", &err);
+	if (!kernel || err != CL_SUCCESS) {
+		printf("Error: Failed to create compute kernel!\n");
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+	cl_mem_ext_ptr_t input_query_ext;
+	cl_mem_ext_ptr_t input_database_ext;
+	cl_mem_ext_ptr_t output_directionMatrix_ext;
+
+	input_query_ext.flags = XCL_MEM_DDR_BANK0;
+	input_query_ext.obj = NULL;
+	input_query_ext.param = 0;
+
+	input_database_ext.flags = XCL_MEM_DDR_BANK1;
+	input_database_ext.obj = NULL;
+	input_database_ext.param = 0;
+
+	output_directionMatrix_ext.flags = XCL_MEM_DDR_BANK0;
+	output_directionMatrix_ext.obj = NULL;
+	output_directionMatrix_ext.param = 0;
+
+
+	input_query = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_EXT_PTR_XILINX, sizeof(unsigned int) * (N/16 + 1),
+	&input_query_ext, NULL);
+	input_database = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_EXT_PTR_XILINX, sizeof(unsigned int) * ((M + 2*(N))/16 + 1),
+	&input_database_ext, NULL);
+//	output_similarity_matrix = clCreateBuffer(context, CL_MEM_READ_WRITE,
+//			sizeof(int) * M * N, NULL, NULL);
+	output_direction_matrixhw = clCreateBuffer(context, CL_MEM_READ_WRITE | CL_MEM_EXT_PTR_XILINX,
+			sizeof(char) * 256 * (N + M - 1), &output_directionMatrix_ext, NULL);
+//	output_max_index = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(int),
+//	NULL, NULL);
+
+	if (!input_query || !input_database || !output_direction_matrixhw) {
+		printf("Error: Failed to allocate device memory!\n");
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// Write our data set into the input array in device memory
+	err = clEnqueueWriteBuffer(commands, input_query, CL_TRUE, 0, sizeof(unsigned int) * (N/16 + 1) , query_param, 0, NULL, NULL);
+	if (err != CL_SUCCESS) {
+		printf("Error: Failed to write to source array a!\n");
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+	err = clEnqueueWriteBuffer(commands, input_database, CL_TRUE, 0, sizeof(unsigned int) * ((M+2*(N))/16 + 1), database_param, 0, NULL, NULL);
+	if (err != CL_SUCCESS) {
+		printf("Error: Failed to write to source array a!\n");
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+//	err = clEnqueueWriteBuffer(commands, output_similarity_matrix, CL_TRUE, 0,
+//			sizeof(int) * N * M, similarity_matrix, 0, NULL, NULL);
+//	if (err != CL_SUCCESS) {
+//		printf("Error: Failed to write to source array a!\n");
+//		printf("Test failed\n");
+//		return EXIT_FAILURE;
+//	}
+
+	err = clEnqueueWriteBuffer(commands, output_direction_matrixhw, CL_TRUE, 0,
+				sizeof(char) * 256 * (N + M - 1), direction_matrixhw, 0, NULL, NULL);
+		if (err != CL_SUCCESS) {
+			printf("Error: Failed to write to source array a!\n");
+			printf("Test failed\n");
+			return EXIT_FAILURE;
+		}
+
+	// Set the arguments to our compute kernel
+	//
+	err = 0;
+	printf("set arg 1 \n");
+	err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &input_query);
+	if (err != CL_SUCCESS) {
+		printf("Error: Failed to set kernel arguments 1! %d\n", err);
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+	printf("set arg 2 \n");
+	err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &input_database);
+	if (err != CL_SUCCESS) {
+		printf("Error: Failed to set kernel arguments 2! %d\n", err);
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+	printf("set arg 3 \n");
+	err |= clSetKernelArg(kernel, 2, sizeof(cl_mem), &output_direction_matrixhw);
+	if (err != CL_SUCCESS) {
+		printf("Error: Failed to set kernel arguments 3! %d\n", err);
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+
+	// Execute the kernel over the entire range of our 1d input data set
+	// using the maximum number of work group items for this device
+	//
+	cl_event enqueue_kernel;
+#ifdef C_KERNEL
+	printf("LAUNCH task \n");
+	err = clEnqueueTask(commands, kernel, 0, NULL, &enqueue_kernel);
+#else
+	//remember to define global and local if run with NDRange
+	err = clEnqueueNDRangeKernel(commands, kernel, 2, NULL, (size_t*) &global,
+			(size_t*) &local, 0, NULL, NULL);
+#endif
+	if (err) {
+		printf("Error: Failed to execute kernel! %d\n", err);
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+	clWaitForEvents(1, &enqueue_kernel);
+
+	// Read back the results from the device to verify the output
+	//
+
+	cl_event readDirections;
+//	err = clEnqueueReadBuffer(commands, output_similarity_matrix, CL_TRUE, 0,
+//			sizeof(char) * N * M, similarity_matrix, 0, NULL, &readSimilarity);
+//	if (err != CL_SUCCESS) {
+//		printf("Error: Failed to read array! %d\n", err);
+//		printf("Test failed\n");
+//		return EXIT_FAILURE;
+//	}
+
+	err = clEnqueueReadBuffer(commands, output_direction_matrixhw, CL_TRUE, 0,
+			sizeof(char) * 256 * (N + M - 1), direction_matrixhw, 0, NULL,
+			&readDirections);
+	if (err != CL_SUCCESS) {
+		printf("Error: Failed to read array! %d\n", err);
+		printf("Test failed\n");
+		return EXIT_FAILURE;
+	}
+//	err = clEnqueueReadBuffer(commands, output_max_index, CL_TRUE, 0,
+//			sizeof(int), max_index, 0, NULL, &readMax);
+//	if (err != CL_SUCCESS) {
+//		printf("Error: Failed to read array! %d\n", err);
+//		printf("Test failed\n");
+//		return EXIT_FAILURE;
+//	}
+
+//	clWaitForEvents(1, &readSimilarity);
+	clWaitForEvents(1, &readDirections);
+//	clWaitForEvents(1, &readMax);
+	float executionTime = getTimeDifference(enqueue_kernel);
+*/
+
+
+
 	int * matrix = ( int *) malloc(
 			sizeof( int) * N * M);
 	short * directionMatrixSW = ( short*) malloc(
@@ -451,47 +794,35 @@ int main(int argc, char** argv) {
 		matrix[i] = 0;
 		directionMatrixSW[i] = 0;
 	}
-	compute_matrices_sw_2(query, database,max_index_sw, matrix, directionMatrixSW );
+//	compute_matrices_sw_2(query, database,max_index_sw, matrix, directionMatrixSW );
+	compute_matrices_sw_3(query,database, matrix, directionMatrixSW);
 
 	unsigned short * ordered_direction_matrix = (unsigned short *)malloc(sizeof(unsigned short) * N * M);
 
-	printf("both ended\n\n");
-
-	// Software Output
-	// Print Column Numbers & Query characters
-		printf("Software Output:\n");
-		printf("     ");
-		for (int i=0; i < N; i ++) {
-			printf("%c(%d) ",query[i],i);
-		}
-		printf("\n");
-
-		for (int i = 0; i < N * M; i++) {
-			// Print similarity and direction matrices
-			if (i % N == 0) {
-				printf("\n");
-				// Print Row Number & Database character
-				printf("%c(%d) ",database[i/N],i/N);
-			}
-			printf("%d(%d) ", matrix[i], directionMatrixSW[i]);
-
-		}
-		printf("\n\n");
-		//printf("Max Index: %d\n", max_index_sw[0]);
-		printf("Max Index [Row:Column]: [%d:%d]\n",max_index_sw[0]/N, max_index_sw[0]%N);
-		printf("Similarity Matrix value at Max Index: %d\n", matrix[max_index_sw[0]]);
-	//
-
-	// Hardware output
+	for(int i = 0; i < N; i ++)
+		printf("%c ", query[i]);
 	printf("\n");
-	printf("Hardware Output:\n");
-	/*
-	printf("databasehw (M+2*(N-1):");
+
+	for(int i = 0; i < M; i ++)
+		printf("%c ", database[i]);
+	printf("\n");
 	for(int i = 0; i < M + 2 * (N -1); i ++)
 			printf("%c ", databasehw[i]);
-	printf("\n");
-	*/
+		printf("\n");
 
+	for(int i = 0; i < N*M; i++){
+		if(i % N == 0)
+			printf("\n");
+		printf(" %d ", directionMatrixSW[i]);
+	}
+
+	printf("hw version \n");
+
+	for(int i = 0; i < 256*(N + M - 1); i++){
+		if ( i % 256 == 0)
+			printf("\n");
+		printf(" %d ", direction_matrixhw[i]);
+	}
 
 	int temp_index = 0;
 	int iter = 1;
@@ -505,42 +836,20 @@ int main(int argc, char** argv) {
 			iter++;
 		}
 	}
-	/*
-	printf("direction_matrixhw (N*(N+M-1):\n");
-		for(int i = 0; i < N*(N + M - 1); i++){
+
+	ordered_direction_matrix = order_matrix_blocks(tempMatrixBis);
+
+	printf("hw version ord\n");
+
+		for(int i = 0; i < N*M; i++){
 			if ( i % N == 0)
 				printf("\n");
-			printf(" %d ", tempMatrixBis[i]);
+			printf(" %d ", ordered_direction_matrix[i]);
 		}
-		printf("\n\n");
-	*/
-	ordered_direction_matrix = order_matrix_blocks(tempMatrixBis, max_index_value);
 
-	//printf("Before Ordering [Row/Column/Value]: %d/%d/%d\n\n",max_index_value[0],max_index_value[1],max_index_value[2]);
+	printf("both ended\n");
 
-	printf("ordered_direction_matrix (N*M):\n");
-
-	printf("     ");
-	for (int i=0; i < N; i ++) {
-		printf("%c(%d) ",query[i],i);
-	}
-	printf("\n");
-	for (int i = 0; i < N * M; i++) {
-		// Print direction matrix
-		if (i % N == 0) {
-			printf("\n");
-			// Print Row Number & Database character
-			printf("%c(%d) ",database[i/N],i/N);
-		}
-		printf(" (%d) ", ordered_direction_matrix[i]);
-
-	}
-	printf("\n");
-	printf("Max Index [Row:Column]: [%d:%d]\n",max_index_value[0], max_index_value[1]);
-	printf("Similarity Matrix value at Max Index: %d\n", max_index_value[2]);
-	printf("\n\n");
-
-	// Compare Hardware and Software outputs
+	//printf(" execution time is %f ms \n", executionTime);
 	for (int i = 0; i < N * M; i++) {
 		if (directionMatrixSW[i] != ordered_direction_matrix[i]) {
 			printf("Error, mismatch in the results, i + %d, SW: %d, HW %d \n",
@@ -549,91 +858,28 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	// Check Max Index Row and Column and Value
-	if(max_index_value[0] != max_index_sw[0]/N || max_index_value[1] != max_index_sw[0]%N || max_index_value[2] != matrix[max_index_sw[0]]){
-		printf("Error, Max Row,Columns,Value do not match: Software[%d,%d,%d], Hardware[%d,%d,%d]\n",max_index_sw[0]/N,max_index_sw[0]%N,matrix[max_index_sw[0]],max_index_value[0],max_index_value[1],max_index_value[2]);
-		return EXIT_FAILURE;
-	}
-
-
 	printf("computation ended!- RESULTS CORRECT \n");
 
-	//Printing best match between query and database
-	char *reverse_match_query = (char*) malloc(sizeof(char) * (N+1));
-	char *reverse_match_database = (char*) malloc(sizeof(char) * (N+1));
-	int num_char_query = 0;
-	int add_query = 1;
-	int num_char_database = 0;
-	int add_database = 1;
-	int dirMat_index = max_index_value[0]*N + max_index_value[1];
+	// Shutdown and cleanup
+	/*
+	clReleaseMemObject(input_database);
+	clReleaseMemObject(input_query);
+	clReleaseMemObject(output_direction_matrixhw);
+//	clReleaseMemObject(output_max_index);
+//	clReleaseMemObject(output_similarity_matrix);
+	clReleaseProgram(program);
+	clReleaseKernel(kernel);
+	clReleaseCommandQueue(commands);
+	clReleaseContext(context);
+	*/
 
-	while(dirMat_index >=0 && ordered_direction_matrix[dirMat_index] != CENTER){
-
-		if(add_query == 1){
-			reverse_match_query[num_char_query] = query[dirMat_index % N];
-			num_char_query++;
-		}
-		if(add_database == 1){
-			reverse_match_database[num_char_database] = database[dirMat_index / N];
-			num_char_database++;
-		}
-
-		//if dirMat_index is at first column of 2D array then exit the while loop
-		if(dirMat_index % N == 0){
-			break;
-		}
-
-		int direction = ordered_direction_matrix[dirMat_index];
-
-		switch(direction){
-		case NORTH:
-			add_query = 0;
-			add_database = 1;
-			dirMat_index = dirMat_index - N;
-			break;
-		case NORTH_WEST:
-			add_query = 1;
-			add_database = 1;
-			dirMat_index = dirMat_index - (N+1);
-			break;
-		case WEST:
-			add_query = 1;
-			add_database = 0;
-			dirMat_index = dirMat_index - 1;
-			break;
-		default:
-			printf("invalid direction found in ordered_direction_matrix\n");
-		}
-
-	}
-
-	printf("Best Match:\n");
-	printf("Query: \n");
-	for(int i=num_char_query-1; i>=0; i--){
-		printf("%c",reverse_match_query[i]);
-	}
-	printf("\n");
-	printf("Database: \n");
-	for(int i=num_char_database-1; i>=0; i--){
-		printf("%c",reverse_match_database[i]);
-	}
-	printf("\n\n");
-
-
-	//free(query);
-	//free(database);
-	//free(databasehw);
-	//free(direction_matrixhw);
-	//free(max_index_value);
-
-	//free(matrix);
-	//free(directionMatrixSW);
-	//free(max_index_sw);
-	//free(ordered_direction_matrix);
-	//free(tempMatrixBis);
-	//free(reverse_match_query);
-	//free(reverse_match_database);
-
+	free(matrix);
+	free(directionMatrixSW);
+	free(databasehw);
+//	free(max_index_sw);
+	free(ordered_direction_matrix);
+	free(query_param);
+	free(database_param);
 
 	return EXIT_SUCCESS;
 }
