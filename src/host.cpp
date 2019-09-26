@@ -57,7 +57,7 @@ short get(char data[], int key) {
 			}
 
 
-unsigned short* order_matrix_blocks(unsigned short* in_matrix){
+unsigned short* order_matrix_blocks(unsigned short* in_matrix, int* max_index_value){
 	unsigned short * out_matrix = (unsigned short*)malloc(sizeof(unsigned short) * N * M);
 
 	int num_diag = 0;
@@ -67,6 +67,8 @@ unsigned short* order_matrix_blocks(unsigned short* in_matrix){
 	int tmp_j = 0;
 	int i = 0;
 	int j;
+
+	int max_index = max_index_value[0]*N + max_index_value[1];
 
 	for(i = 0; i<(M + N - 1) * N;){
 	//while(store_elem != 0){
@@ -81,6 +83,12 @@ unsigned short* order_matrix_blocks(unsigned short* in_matrix){
 		for(j = 0; j < store_elem; j++){
 			store_index = tmp_j * N + tmp_i;
 			out_matrix[store_index] = in_matrix[i];
+
+			if(max_index == i){
+				max_index_value[0] = store_index / N;
+				max_index_value[1] = store_index % N;
+			}
+
 			//printf("stored %d in index %d \n", out_matrix[store_index], store_index);
 			tmp_j--;
 			tmp_i++;
@@ -401,7 +409,11 @@ int main(int argc, char** argv) {
 	char *databasehw = (char*) malloc(sizeof(char) * (M + 2 *N));
 //	int *similarity_matrix = (int*) malloc(sizeof(int) * N * M);
 	char *direction_matrixhw = (char*) malloc(sizeof(char) * 256 * (N + M - 1)); //512 bits..
-//	int *max_index = (int *) malloc(sizeof(int));
+	int *max_index_value = (int*) malloc(sizeof(int) * 3);
+
+	max_index_value[0] = 0;
+	max_index_value[1] = 0;
+	max_index_value[2] = 0;
 
 	unsigned int * query_param = (unsigned int *)malloc(sizeof(unsigned int) * (N/16 + 1));
 	unsigned int * database_param = (unsigned int *)malloc(sizeof(unsigned int) * ((M + 2*(N))/16 + 1));
@@ -452,15 +464,15 @@ int main(int argc, char** argv) {
 //	memset(similarity_matrix, 0, sizeof(int) * N * M);
 	memset(direction_matrixhw, 0, sizeof(char) * 256 * (N + M - 1));
 
-	printf("query \n");
+	//printf("query \n");
 	for(int i = 0; i < N; i++){
-		printf("%c", query[i]);
+		//printf("%c", query[i]);
 		set_char_main(query_param, i, query[i]);
 	}
 
-	printf("\ndatabase \n");
+	//printf("\ndatabase \n");
 	for(int i = 0; i < M + 2*(N); i++){
-		printf("%c", databasehw[i]);
+		//printf("%c", databasehw[i]);
 		set_char_main(database_param, i, databasehw[i]);
 //		printf(" = %d, ", (database_param[i/16] >> ((i%16) * 2)) & 3);
 	}
@@ -495,16 +507,16 @@ int main(int argc, char** argv) {
 			sizeof(unsigned int) * ((M + 2*(N))/16 + 1), database_param, &err));
 	OCL_CHECK(err, cl::Buffer output_direction_matrixhw (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
 			sizeof(char) * 256 * (N + M - 1), direction_matrixhw, &err));
-	//OCL_CHECK(err, cl::Buffer output_max_index_value (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
-	//				sizeof(int) * 3, max_index_value, &err));
+	OCL_CHECK(err, cl::Buffer output_max_index_value (context,CL_MEM_USE_HOST_PTR | CL_MEM_READ_WRITE,
+					sizeof(int) * 3, max_index_value, &err));
 
 	// Copy input data to device global memory
-	OCL_CHECK(err, err = q.enqueueMigrateMemObjects({input_query, input_database, output_direction_matrixhw},0/* 0 means from host*/));
+	OCL_CHECK(err, err = q.enqueueMigrateMemObjects({input_query, input_database, output_direction_matrixhw, output_max_index_value},0/* 0 means from host*/));
 
 	OCL_CHECK(err, err = krnl_compute_matrices.setArg(0, input_query));
 	OCL_CHECK(err, err = krnl_compute_matrices.setArg(1, input_database));
 	OCL_CHECK(err, err = krnl_compute_matrices.setArg(2, output_direction_matrixhw));
-	//OCL_CHECK(err, err = krnl_compute_matrices.setArg(3, output_max_index_value));
+	OCL_CHECK(err, err = krnl_compute_matrices.setArg(3, output_max_index_value));
 
 	// Launch the Kernel
 	// For HLS kernels global and local size is always (1,1,1). So, it is recommended
@@ -512,7 +524,7 @@ int main(int argc, char** argv) {
 	OCL_CHECK(err, err = q.enqueueTask(krnl_compute_matrices));
 
 	// Copy Result from Device Global Memory to Host Local Memory
-	OCL_CHECK(err, err = q.enqueueMigrateMemObjects({output_direction_matrixhw},CL_MIGRATE_MEM_OBJECT_HOST));
+	OCL_CHECK(err, err = q.enqueueMigrateMemObjects({output_direction_matrixhw, output_max_index_value},CL_MIGRATE_MEM_OBJECT_HOST));
 
 	//q.finish();
 	OCL_CHECK(err, err = q.finish());
@@ -794,11 +806,12 @@ int main(int argc, char** argv) {
 		matrix[i] = 0;
 		directionMatrixSW[i] = 0;
 	}
-//	compute_matrices_sw_2(query, database,max_index_sw, matrix, directionMatrixSW );
+//	compute_matrices_sw(query, database,max_index_sw, matrix, directionMatrixSW );
 	compute_matrices_sw_3(query,database, matrix, directionMatrixSW);
 
 	unsigned short * ordered_direction_matrix = (unsigned short *)malloc(sizeof(unsigned short) * N * M);
 
+	/*
 	for(int i = 0; i < N; i ++)
 		printf("%c ", query[i]);
 	printf("\n");
@@ -823,6 +836,7 @@ int main(int argc, char** argv) {
 			printf("\n");
 		printf(" %d ", direction_matrixhw[i]);
 	}
+	*/
 
 	int temp_index = 0;
 	int iter = 1;
@@ -837,8 +851,9 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	ordered_direction_matrix = order_matrix_blocks(tempMatrixBis);
+	ordered_direction_matrix = order_matrix_blocks(tempMatrixBis, max_index_value);
 
+	/*
 	printf("hw version ord\n");
 
 		for(int i = 0; i < N*M; i++){
@@ -846,10 +861,126 @@ int main(int argc, char** argv) {
 				printf("\n");
 			printf(" %d ", ordered_direction_matrix[i]);
 		}
-
+	*/
 	printf("both ended\n");
 
 	//printf(" execution time is %f ms \n", executionTime);
+
+
+	// Software Output
+	// Print Column Numbers & Query characters
+	//printf("Software Output:\n");
+	/*
+	printf("     ");
+	for (int i=0; i < N; i ++) {
+		printf("%c(%d) ",query[i],i);
+	}
+	printf("\n");
+
+	for (int i = 0; i < N * M; i++) {
+		// Print similarity and direction matrices
+		if (i % N == 0) {
+			printf("\n");
+			// Print Row Number & Database character
+			printf("%c(%d) ",database[i/N],i/N);
+		}
+		printf("%d(%d) ", matrix[i], directionMatrixSW[i]);
+
+	}
+	printf("\n\n");
+	*/
+	//printf("Max Index [Row:Column]: [%d:%d]\n",max_index_sw[0]/N, max_index_sw[0]%N);
+	//printf("Similarity Matrix value at Max Index: %d\n", matrix[max_index_sw[0]]);
+	//
+
+	// Hardware output
+	printf("\n");
+	printf("Hardware Output:\n");
+	/*
+	printf("ordered_direction_matrix (N*M):\n");
+
+	printf("     ");
+	for (int i=0; i < N; i ++) {
+		printf("%c(%d) ",query[i],i);
+	}
+	printf("\n");
+	for (int i = 0; i < N * M; i++) {
+		// Print direction matrix
+		if (i % N == 0) {
+			printf("\n");
+			// Print Row Number & Database character
+			printf("%c(%d) ",database[i/N],i/N);
+		}
+		printf(" (%d) ", ordered_direction_matrix[i]);
+
+	}
+	printf("\n");
+	*/
+	printf("Max Index [Row:Column]: [%d:%d]\n",max_index_value[0], max_index_value[1]);
+	printf("Similarity Matrix value at Max Index: %d\n", max_index_value[2]);
+	printf("\n\n");
+
+	//Printing best match between query and database
+	char *reverse_match_query = (char*) malloc(sizeof(char) * (N+1));
+	char *reverse_match_database = (char*) malloc(sizeof(char) * (N+1));
+	int num_char_query = 0;
+	int add_query = 1;
+	int num_char_database = 0;
+	int add_database = 1;
+	int dirMat_index = max_index_value[0]*N + max_index_value[1];
+
+	while(dirMat_index >=0 && ordered_direction_matrix[dirMat_index] != CENTER){
+
+		if(add_query == 1){
+			reverse_match_query[num_char_query] = query[dirMat_index % N];
+			num_char_query++;
+		}
+		if(add_database == 1){
+			reverse_match_database[num_char_database] = database[dirMat_index / N];
+			num_char_database++;
+		}
+
+		//if dirMat_index is at first column of 2D array then exit the while loop
+		if(dirMat_index % N == 0){
+			break;
+		}
+
+		int direction = ordered_direction_matrix[dirMat_index];
+
+		switch(direction){
+		case NORTH:
+			add_query = 0;
+			add_database = 1;
+			dirMat_index = dirMat_index - N;
+			break;
+		case NORTH_WEST:
+			add_query = 1;
+			add_database = 1;
+			dirMat_index = dirMat_index - (N+1);
+			break;
+		case WEST:
+			add_query = 1;
+			add_database = 0;
+			dirMat_index = dirMat_index - 1;
+			break;
+		default:
+			printf("invalid direction found in ordered_direction_matrix\n");
+		}
+
+	}
+
+	printf("Best Match:\n");
+	printf("Query: \n");
+	for(int i=num_char_query-1; i>=0; i--){
+		printf("%c",reverse_match_query[i]);
+	}
+	printf("\n");
+	printf("Database: \n");
+	for(int i=num_char_database-1; i>=0; i--){
+		printf("%c",reverse_match_database[i]);
+	}
+	printf("\n\n");
+
 	for (int i = 0; i < N * M; i++) {
 		if (directionMatrixSW[i] != ordered_direction_matrix[i]) {
 			printf("Error, mismatch in the results, i + %d, SW: %d, HW %d \n",

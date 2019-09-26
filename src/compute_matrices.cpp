@@ -20,6 +20,7 @@ static const short MISS_MATCH = -1;
 #define NUM_ELEM 256
 #define DATABASE_SIZE (M + 2 * (N - 1))
 #define DIRECTION_MATRIX_SIZE ((N + M - 1) * N)
+#define SIMILARITY_MATRIX_SIZE (N+M-1) * 2
 #define MATRIX_SIZE (N * M)
 
 extern "C" {
@@ -46,7 +47,7 @@ void update_database(ap_uint<512> *database, ap_uint<512> *shift_db, int num_dia
 
 
 
-void calculate_diagonal(int num_diagonals, ap_uint<512> * string1, ap_uint<512> * string2, int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[], ap_uint<512> shift_db[], ap_uint<512> *direction_matrix_g){
+void calculate_diagonal(int num_diagonals, ap_uint<512> * string1, ap_uint<512> * string2, int northwest[N + 1], int north[N + 1], int west[N + 1], int directions_index, ap_uint<512> compressed_diag[], ap_uint<512> shift_db[], ap_uint<512> *direction_matrix_g, int *similarity_matrix, int *similarityDiagonal){
 #pragma HLS INLINE region recursive
 	int databaseLocalIndex = 0;
 	int from, to;
@@ -73,6 +74,7 @@ void calculate_diagonal(int num_diagonals, ap_uint<512> * string1, ap_uint<512> 
 			west[index + 1] = val1;
 			compressed_diag[0].range(to,from) = NORTH_WEST;
 //			directionDiagonal[index] = NORTH_WEST;
+			val = val1;
 		} else if (val2 > val && val2 >= val3) {
 			//val2
 			northwest[index + 1] = north[index];
@@ -80,6 +82,7 @@ void calculate_diagonal(int num_diagonals, ap_uint<512> * string1, ap_uint<512> 
 			west[index + 1] = val2;
 			compressed_diag[0].range(to,from) = NORTH;
 //			directionDiagonal[index] = NORTH;
+			val = val2;
 		}else if (val3 > val){
 			//val3
 			northwest[index + 1] = north[index];
@@ -87,6 +90,7 @@ void calculate_diagonal(int num_diagonals, ap_uint<512> * string1, ap_uint<512> 
 			west[index + 1] = val3;
 			compressed_diag[0].range(to,from) = WEST;
 //			directionDiagonal[index] = WEST;
+			val = val3;
 		}else{
 			//val
 			northwest[index + 1] = north[index];
@@ -95,6 +99,9 @@ void calculate_diagonal(int num_diagonals, ap_uint<512> * string1, ap_uint<512> 
 			compressed_diag[0].range(to,from) = CENTER;
 //			directionDiagonal[index] = CENTER;
 		}
+
+		similarityDiagonal[index] = val;
+
 		databaseLocalIndex ++;
 		from -= 2;
 		to -= 2;
@@ -102,20 +109,36 @@ void calculate_diagonal(int num_diagonals, ap_uint<512> * string1, ap_uint<512> 
 
 	memcpy((ap_int<512>*) ((direction_matrix_g + num_diagonals)), compressed_diag,  64);
 
+	// Similarity Matrix Calculation
+	int max_val = 0;
+	int max_index = 0;
+
+	find_simDiag_max_for: for(int i=N-1; i>=0; i--){
+		if(similarityDiagonal[i]>max_val){
+			max_val = similarityDiagonal[i];
+			max_index = i;
+		}
+	}
+
+	//Store max_index and max_value in similarity_matrix
+	similarity_matrix[directions_index*2] = max_index;
+	similarity_matrix[directions_index*2+1] = max_val;
 
 }
 
 
 
-void compute_matrices( ap_uint<512> *string1_g, ap_uint<512> *string2_g, ap_uint<512> *direction_matrix_g)
+void compute_matrices( ap_uint<512> *string1_g, ap_uint<512> *string2_g, ap_uint<512> *direction_matrix_g, int *max_index_value)
 {
 #pragma HLS INTERFACE m_axi port=string1_g offset=slave bundle=gmem0
 #pragma HLS INTERFACE m_axi port=string2_g offset=slave bundle=gmem1
 #pragma HLS INTERFACE m_axi port=direction_matrix_g offset=slave bundle=gmem2
+#pragma HLS INTERFACE m_axi port=max_index_value offset=slave bundle=gmem3
 
 #pragma HLS INTERFACE s_axilite port=string1_g bundle=control
 #pragma HLS INTERFACE s_axilite port=string2_g bundle=control
 #pragma HLS INTERFACE s_axilite port=direction_matrix_g bundle=control
+#pragma HLS INTERFACE s_axilite port=max_index_value bundle=control
 
 #pragma HLS INTERFACE s_axilite port=return bundle=control
 
@@ -159,18 +182,40 @@ void compute_matrices( ap_uint<512> *string1_g, ap_uint<512> *string2_g, ap_uint
 
 	int directions_index = 0;
 
+	int similarity_matrix[SIMILARITY_MATRIX_SIZE];
+#pragma HLS ARRAY_PARTITION variable=similarity_matrix cyclic factor=2
+
+	int similarityDiagonal[N];
+	#pragma HLS ARRAY_PARTITION variable=similarityDiagonal complete dim=1
+
 	num_diag_for: for(int num_diagonals = 0; num_diagonals < N + M - 1; num_diagonals++){
 #pragma HLS inline region recursive
 #pragma HLS PIPELINE
 
-		calculate_diagonal(num_diagonals, string1, string2, northwest, north, west, directions_index, compressed_diag, shift_db, direction_matrix_g);
+		calculate_diagonal(num_diagonals, string1, string2, northwest, north, west, directions_index, compressed_diag, shift_db, direction_matrix_g, similarity_matrix, similarityDiagonal);
 
 		update_database(string2, shift_db, num_diagonals);
 //		store_diagonal(directions_index,  direction_matrix_g, compressed_diag);
-//		directions_index ++;
+		directions_index++;
 	}
 
 //	memcpy(direction_matrix_g, direction_matrix, DIRECTION_MATRIX_SIZE * sizeof(short));
+
+	int max_val = 0;
+	int max_row = 0;
+	int max_col = 0;
+
+	find_max_in_simMat_for:for(int i=0; i<(N+M-1); i++){
+		if(similarity_matrix[i*2+1] > max_val){
+			max_val = similarity_matrix[i*2+1];
+			max_col = similarity_matrix[i*2];
+			max_row = i;
+		}
+	}
+
+	max_index_value[0] = max_row;
+	max_index_value[1] = max_col;
+	max_index_value[2] = max_val;
 
 	return;
 }
