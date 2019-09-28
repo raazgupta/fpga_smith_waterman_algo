@@ -22,3 +22,5 @@ $SDACCEL_DIR/tools/create_sdaccel_afi.sh \
 sudo sh
 source /opt/xilinx/xrt/setup.sh
 ./file.exe awsxclbinfile
+
+Here is more information about how to load AWS images on fpga or check/clear current fpga image: https://github.com/aws/aws-fpga/blob/master/hdk/README.md#iss
