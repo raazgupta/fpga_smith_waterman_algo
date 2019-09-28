@@ -12,7 +12,7 @@ Then check instructions: https://github.com/aws/aws-fpga/blob/master/SDAccel/doc
 The userid, password needs to taken from AWS Identity and Access Management (IAM) section. Create a new user with 'Administrator Access'. Create and save Access Key. Use this as userid, password. 
 - Create the AWS FPGA binary by running this command: 
 $SDACCEL_DIR/tools/create_sdaccel_afi.sh \
-	  -xclbin=<xclbin file name>.xclbin \
-	  -s3_bucket=<bucket-name> \
-	  -s3_dcp_key=<dcp-folder-name> \
-	  -s3_logs_key=<logs-folder-name>
+	  -xclbin=xclbin file name.xclbin \
+	  -s3_bucket=bucket-name \
+	  -s3_dcp_key=dcp-folder-name \
+	  -s3_logs_key=logs-folder-name
