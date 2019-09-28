@@ -16,3 +16,9 @@ $SDACCEL_DIR/tools/create_sdaccel_afi.sh \
 	  -s3_bucket=bucket-name \
 	  -s3_dcp_key=dcp-folder-name \
 	  -s3_logs_key=logs-folder-name
+- Find the AFI IDs by opening the file: timestamp_afi_id.txt
+- Check when the Code is in 'avaiable' state by running: aws ec2 describe-fpga-images --fpga-image-ids AFI_ID
+- When it is available, to execute the application on fpga, from the System folder execute: 
+sudo sh
+source /opt/xilinx/xrt/setup.sh
+./file.exe awsxclbinfile
