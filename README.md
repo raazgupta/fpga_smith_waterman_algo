@@ -4,7 +4,7 @@
 - For remote desktop access you need to follow these instructions to setup DCV Viewer: https://forums.aws.amazon.com/ann.jspa?annID=6352
 - Using SDAccel write the host and kernel code. Build for Software (SW) and test functionality. Check Iteration Interval and FPGA utitlization in Vivado.
 - After software version is working as expected, start EC2 f1.2xlarge instance and also set it up with FPGA Developer AMI.
-- Copy host and kernel files to f1 instance and use SDAccel to build and run in Software. Double check functionality. Next build for System. 
+- Copy host and kernel files to f1 instance and use SDAccel to build and run in Software. Double check functionality. Make sure you have atleast 5GB of free disk space. Next build for System. 
 - This creates the xclbin file in the System folder of the Project workspace. 
 - If you do not have an S3 bucket to store the AWS binary files, create it using these instructions: 
 In AWS web console, create an S3 bucket and new folders for dcp and log files.
