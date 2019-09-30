@@ -11,9 +11,11 @@ In AWS web console, create an S3 bucket and new folders for dcp and log files.
 Then check instructions: https://github.com/aws/aws-fpga/blob/master/SDAccel/docs/Setup_AWS_CLI_and_S3_Bucket.md
 The userid, password needs to taken from AWS Identity and Access Management (IAM) section. Create a new user with 'Administrator Access'. Create and save Access Key. Use this as userid, password. 
 - Create the AWS FPGA binary by running this command: 
+source $AWS_FPGA_REPO_DIR/sdaccel_setup.sh
+cp binary_container_1.xclbin unique_file_name.xclbin
 $AWS_FPGA_REPO_DIR/SDAccel/tools/create_sdaccel_afi.sh -xclbin=xclbin file name.xclbin -s3_bucket=bucket-name -s3_dcp_key=dcp-folder-name -s3_logs_key=logs-folder-name
 - Find the AFI IDs by opening the file: timestamp_afi_id.txt
-- Check when the Code is in 'avaiable' state by running: aws ec2 describe-fpga-images --fpga-image-ids AFI_ID
+- Check when the Code is in 'avaiable' state by running: aws ec2 describe-fpga-images --fpga-image-ids FpgaImageId
 - When it is available, to execute the application on fpga, from the System folder execute: 
 sudo sh
 source /opt/xilinx/xrt/setup.sh
