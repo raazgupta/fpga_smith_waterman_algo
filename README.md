@@ -6,19 +6,19 @@
 - After software version is working as expected, start EC2 f1.2xlarge instance and also set it up with FPGA Developer AMI.
 - Copy host and kernel files to f1 instance and use SDAccel to build and run in Software. Double check functionality. Make sure you have atleast 5GB of free disk space. Next build for System. 
 - This creates the xclbin file in the System folder of the Project workspace. 
-- If you do not have an S3 bucket to store the AWS binary files, create it using these instructions: 
-In AWS web console, create an S3 bucket and new folders for dcp and log files.
-Then check instructions: https://github.com/aws/aws-fpga/blob/master/SDAccel/docs/Setup_AWS_CLI_and_S3_Bucket.md
-The userid, password needs to taken from AWS Identity and Access Management (IAM) section. Create a new user with 'Administrator Access'. Create and save Access Key. Use this as userid, password. 
+- If you do not have an S3 bucket to store the AWS binary files, create it using these instructions: <br/>
+In AWS web console, create an S3 bucket and new folders for dcp and log files.<br/>
+Then check instructions: https://github.com/aws/aws-fpga/blob/master/SDAccel/docs/Setup_AWS_CLI_and_S3_Bucket.md<br/>
+The userid, password needs to taken from AWS Identity and Access Management (IAM) section. Create a new user with 'Administrator Access'. Create and save Access Key. Use this as userid, password. <br/>
 - Create the AWS FPGA binary by running this command: 
-source $AWS_FPGA_REPO_DIR/sdaccel_setup.sh
-cp binary_container_1.xclbin unique_file_name.xclbin
-$AWS_FPGA_REPO_DIR/SDAccel/tools/create_sdaccel_afi.sh -xclbin=xclbin file name.xclbin -s3_bucket=bucket-name -s3_dcp_key=dcp-folder-name -s3_logs_key=logs-folder-name
+source $AWS_FPGA_REPO_DIR/sdaccel_setup.sh<br/>
+cp binary_container_1.xclbin unique_file_name.xclbin<br/>
+$AWS_FPGA_REPO_DIR/SDAccel/tools/create_sdaccel_afi.sh -xclbin=xclbin file name.xclbin -s3_bucket=bucket-name -s3_dcp_key=dcp-folder-name -s3_logs_key=logs-folder-name<br/>
 - Find the AFI IDs by opening the file: timestamp_afi_id.txt
 - Check when the Code is in 'avaiable' state by running: aws ec2 describe-fpga-images --fpga-image-ids FpgaImageId
-- When it is available, to execute the application on fpga, from the System folder execute: 
-sudo sh
-source /opt/xilinx/xrt/setup.sh
-./file.exe awsxclbinfile
+- When it is available, to execute the application on fpga, from the System folder execute: <br/>
+sudo sh<br/>
+source /opt/xilinx/xrt/setup.sh<br/>
+./file.exe awsxclbinfile<br/>
 
-Here is more information about how to load AWS images on fpga or check/clear current fpga image: https://github.com/aws/aws-fpga/blob/master/hdk/README.md#iss
+- Here is more information about how to load AWS images on fpga or check/clear current fpga image: https://github.com/aws/aws-fpga/blob/master/hdk/README.md#iss
