@@ -18,7 +18,7 @@ cp <from System directory>/xclbin_file_name.xclbin . <br/>
 - Find the AFI IDs by opening the file: timestamp_afi_id.txt
 - Check when the Code is in 'avaiable' state by running: aws ec2 describe-fpga-images --fpga-image-ids FpgaImageId
 - When it is available, to execute the application on fpga, from the System folder execute: <br/>
-source $AWS_FPGA_REPO_DIR/sdaccel_setup.sh
+source $AWS_FPGA_REPO_DIR/sdaccel_setup.sh<br/>
 sudo sh<br/>
 source /opt/xilinx/xrt/setup.sh<br/>
   soruce 
