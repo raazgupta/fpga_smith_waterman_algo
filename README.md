@@ -10,7 +10,7 @@
 In AWS web console, create an S3 bucket and new folders for dcp and log files.<br/>
 Then check instructions: https://github.com/aws/aws-fpga/blob/master/SDAccel/docs/Setup_AWS_CLI_and_S3_Bucket.md<br/>
 The userid, password needs to taken from AWS Identity and Access Management (IAM) section. Create a new user with 'Administrator Access'. Create and save Access Key. Use this as userid, password. <br/>
-- Create the AWS FPGA binary by running this command: 
+- Create the AWS FPGA binary by running this command: <br/>
 source $AWS_FPGA_REPO_DIR/sdaccel_setup.sh<br/>
 cd $AWS_FPGA_REPO_DIR/SDAccel/tools/<br/>
 cp <from System directory>/xclbin_file_name.xclbin . <br/>
