@@ -22,8 +22,7 @@ Free up space by: rm old_timestamp-files <br/>
 - When it is available, to execute the application on fpga, from the System folder execute: <br/>
 source $AWS_FPGA_REPO_DIR/sdaccel_setup.sh<br/>
 sudo sh<br/>
-source /opt/xilinx/xrt/setup.sh<br/>
-  soruce 
+source /opt/xilinx/xrt/setup.sh<br/> 
 ./file.exe awsxclbinfile<br/>
 
 - Here is more information about how to load AWS images on fpga or check/clear current fpga image: https://github.com/aws/aws-fpga/blob/master/hdk/README.md#iss
