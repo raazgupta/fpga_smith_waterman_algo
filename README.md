@@ -14,6 +14,8 @@ The userid, password needs to taken from AWS Identity and Access Management (IAM
 source $AWS_FPGA_REPO_DIR/sdaccel_setup.sh<br/>
 cd $AWS_FPGA_REPO_DIR/SDAccel/tools/<br/>
 cp <from System directory>/xclbin_file_name.xclbin . <br/>
+sudo rm -r to_aws<br/>
+Free up space by: rm old_timestamp-files <br/>
 ./create_sdaccel_afi.sh -xclbin=xclbin_file_name.xclbin -s3_bucket=bucket-name -s3_dcp_key=dcp-folder-name -s3_logs_key=logs-folder-name<br/>
 - Find the AFI IDs by opening the file: timestamp_afi_id.txt
 - Check when the Code is in 'avaiable' state by running: aws ec2 describe-fpga-images --fpga-image-ids FpgaImageId
